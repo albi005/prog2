@@ -1,18 +1,18 @@
 local dap = require('dap')
 
-local options = "-lm -Wall -std=c11 -g -O0"
+local options = "-g -O0"
 
 dap.configurations.c = {
     {
-        name = "Run C program",
+        name = "Run C++ program",
         type = "cppdbg",
         request = "launch",
         program = function()
             local cmd
             if string.find(vim.fn.expand('%'), 'nhf') then
-                cmd = '!gcc ' .. options .. ' ' .. vim.fn.expand('%:p:h') .. '/*.c'
+                cmd = '!g++ ' .. options .. ' ' .. vim.fn.expand('%:p:h') .. '/*.cpp'
             else
-                cmd = '!gcc ' .. options .. ' "' .. vim.fn.expand('%') .. '"'
+                cmd = '!g++ ' .. options .. ' "' .. vim.fn.expand('%') .. '"'
             end
             vim.cmd(cmd)
             return '${workspaceFolder}/a.out'
@@ -45,9 +45,9 @@ vim.keymap.set('n', '<Leader>r', function ()
     local input = vim.fn.expand('%:r') .. '.in'
     local exists = vim.fn.filereadable(input)
     if exists == 1 then
-        vim.cmd('!gcc ' .. options .. ' "%" && ./a.out < "' .. input .. '"')
+        vim.cmd('!g++ ' .. options .. ' "%" && ./a.out < "' .. input .. '"')
     else
-        vim.cmd('!gcc ' .. options .. ' "%" && ./a.out')
+        vim.cmd('!g++ ' .. options .. ' "%" && ./a.out')
     end
 end)
 
@@ -55,9 +55,9 @@ end)
 vim.keymap.set('n', '<Leader>t', function ()
     local cmd
     if string.find(vim.fn.expand('%'), 'nhf') then
-        cmd = '!gcc ' .. options .. ' ' .. vim.fn.expand('%:p:h') .. '/*.c'
+        cmd = '!g++ ' .. options .. ' ' .. vim.fn.expand('%:p:h') .. '/*.cpp'
     else
-        cmd = '!gcc ' .. options .. ' "' .. vim.fn.expand('%') .. '"'
+        cmd = '!g++ ' .. options .. ' "' .. vim.fn.expand('%') .. '"'
     end
     vim.cmd(cmd)
 
@@ -65,8 +65,5 @@ vim.keymap.set('n', '<Leader>t', function ()
 
     vim.cmd(':te (cd ' .. dir .. ' && ../a.out)')
 end)
-
---- compile and run SDL2 program
-vim.keymap.set('n', '<Leader>s', ':!gcc ' .. options .. ' "%" `sdl2-config --cflags --libs` -lSDL2_gfx -lSDL2_ttf -lSDL2_image -lSDL2_mixer && ./a.out <CR>', { noremap = true });
 
 vim.keymap.set('n', '<Leader>h', ':ClangdSwitchSourceHeader<CR>');

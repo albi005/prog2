@@ -1,0 +1,13 @@
+**.gch
+**.out
+**.zip
+**.pdf
+.cache
+.direnv
+bin
+compile_commands.json
+result
+.idea
+**.exe
+cmake-build-debug
+**.o

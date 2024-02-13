@@ -1,3 +1,23 @@
 GL6IFB
+
+## Forditas lepesei
+1. pwd: /home/albi/src/prog2
+2. Neovim 0.9.4 van a HSZK gepeken (`nvim` parancs)
+3. Warning, szabvany, bemenet, kimenet, minden
+4. `g++ -E`: A teljes bibliat nem kepes eleg gyorsan kiirni az MSYS UCRT dolog
+5. Tenyleg lecserelte
+6. `g++ main.cpp foo.cpp` nem eleg?
+8. sebtapasz
+9. main3.cpp:4:1: error: extended character   is not valid in an identifier
+```cpp
+int main() {
+\U000000a0\U000000a0\U000000a0\U000000a0\U000000a0\U000000a0\U000000a0\U000000a0return 0;
+}
+```
+Alapbol `&nbsp` van space helyett a infocpp-n, kijeloles helyett dupla-kattintassal kell masolni.
+10. a-nak nem adtunk erteket mielott kiirattuk
+11. debug symbols, treat warnings as errors, no optimization
+
+## polinom
 10. floating point dolgok miatt nem mukodik
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+12. Csak azt ellenorizzuk, hogy a szamok eleg kozel vannak-e egymashoz.

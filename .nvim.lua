@@ -1,6 +1,6 @@
 local dap = require('dap')
 
-local options = "-g -O0"
+local options = "-g -O0 -U _FORTIFY_SOURCE"
 
 dap.configurations.c = {
     {
@@ -44,10 +44,12 @@ dap.adapters.cppdbg = {
 vim.keymap.set('n', '<Leader>r', function ()
     local input = vim.fn.expand('%:r') .. '.in'
     local exists = vim.fn.filereadable(input)
+    local dir = vim.fn.expand('%:h')
+    local cmd = '!g++ ' .. options .. ' '.. dir .. '/*.cpp && ./a.out'
     if exists == 1 then
-        vim.cmd('!g++ ' .. options .. ' "%" && ./a.out < "' .. input .. '"')
+        vim.cmd(cmd .. ' < "' .. input .. '"')
     else
-        vim.cmd('!g++ ' .. options .. ' "%" && ./a.out')
+        vim.cmd(cmd)
     end
 end)
 

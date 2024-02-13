@@ -67,3 +67,4 @@ vim.keymap.set('n', '<Leader>t', function ()
 end)
 
 vim.keymap.set('n', '<Leader>h', ':ClangdSwitchSourceHeader<CR>');
+vim.keymap.set('n', '<Leader>c', ":'<,'>s/ / /g"); -- &nbsp babyyyyyyyyyyyyy

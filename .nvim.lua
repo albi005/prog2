@@ -2,18 +2,15 @@ local dap = require('dap')
 
 local options = "-g -O0 -U _FORTIFY_SOURCE"
 
-dap.configurations.c = {
+-- TODO: set up debugging
+dap.configurations.cpp = {
     {
         name = "Run C++ program",
         type = "cppdbg",
         request = "launch",
         program = function()
-            local cmd
-            if string.find(vim.fn.expand('%'), 'nhf') then
-                cmd = '!g++ ' .. options .. ' ' .. vim.fn.expand('%:p:h') .. '/*.cpp'
-            else
-                cmd = '!g++ ' .. options .. ' "' .. vim.fn.expand('%') .. '"'
-            end
+            local dir = vim.fn.expand('%:h')
+            local cmd = '!g++ ' .. options .. ' '.. dir .. '/*.cpp'
             vim.cmd(cmd)
             return '${workspaceFolder}/a.out'
         end,
@@ -56,11 +53,7 @@ end)
 -- compile and run in an interactive shell
 vim.keymap.set('n', '<Leader>t', function ()
     local cmd
-    if string.find(vim.fn.expand('%'), 'nhf') then
-        cmd = '!g++ ' .. options .. ' ' .. vim.fn.expand('%:p:h') .. '/*.cpp'
-    else
-        cmd = '!g++ ' .. options .. ' "' .. vim.fn.expand('%') .. '"'
-    end
+    cmd = '!g++ ' .. options .. ' "' .. vim.fn.expand('%') .. '"'
     vim.cmd(cmd)
 
     local dir = vim.fn.expand('%:p:h')

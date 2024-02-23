@@ -1,6 +1,6 @@
 local dap = require('dap')
 
-local options = "-g -O0 -U _FORTIFY_SOURCE"
+local options = "-g -D MEMTRACE -O0 -U _FORTIFY_SOURCE"
 
 -- TODO: set up debugging
 dap.configurations.cpp = {
@@ -15,9 +15,6 @@ dap.configurations.cpp = {
             return '${workspaceFolder}/a.out'
         end,
         cwd = function ()
-            if string.find(vim.fn.expand('%'), 'nhf') then
-                return '${workspaceFolder}/nhf'
-            end
             return '${workspaceFolder}'
         end,
         stopAtEntry = false,

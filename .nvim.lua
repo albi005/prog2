@@ -1,6 +1,6 @@
 local dap = require('dap')
 
-local options = "-g -D MEMTRACE -O0 -U _FORTIFY_SOURCE"
+local options = "-g -D MEMTRACE -D DEBUG -O0 -U _FORTIFY_SOURCE"
 
 -- TODO: set up debugging
 dap.configurations.cpp = {
@@ -36,15 +36,9 @@ dap.adapters.cppdbg = {
 
 -- compile and run, pass in input if it exists
 vim.keymap.set('n', '<Leader>r', function ()
-    local input = vim.fn.expand('%:r') .. '.in'
-    local exists = vim.fn.filereadable(input)
     local dir = vim.fn.expand('%:h')
     local cmd = '!g++ ' .. options .. ' '.. dir .. '/*.cpp && ./a.out'
-    if exists == 1 then
-        vim.cmd(cmd .. ' < "' .. input .. '"')
-    else
-        vim.cmd(cmd)
-    end
+    vim.cmd(cmd)
 end)
 
 -- compile and run in an interactive shell

@@ -2,20 +2,20 @@ local dap = require('dap')
 
 local options = "-g -D MEMTRACE -D DEBUG -O0 -U _FORTIFY_SOURCE"
 
--- TODO: set up debugging
 dap.configurations.cpp = {
     {
         name = "Run C++ program",
         type = "cppdbg",
         request = "launch",
         program = function()
-            local dir = vim.fn.expand('%:h')
-            local cmd = '!g++ ' .. options .. ' '.. dir .. '/*.cpp'
+            local dir = vim.fn.expand('%:p:h')
+            local cmd = '!TARGET=a.out make --environment-overrides --directory ' .. dir
             vim.cmd(cmd)
-            return '${workspaceFolder}/a.out'
+            return dir .. "/a.out"
         end,
-        cwd = function ()
-            return '${workspaceFolder}'
+        cwd = function()
+            local dir = vim.fn.expand('%:p:h')
+            return dir
         end,
         stopAtEntry = false,
         setupCommands = {

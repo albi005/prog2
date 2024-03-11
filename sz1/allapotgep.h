@@ -29,17 +29,17 @@ enum Bazis {
 };
 
 class State {
-    bool value;
+    bool output;
     char* name;
-    State** nextStates;
+    int* nextStateIndexes;
 
 public:
     State() {}
-    void parseValueAndName(std::ifstream& is);
+    void parseOutputAndName(std::ifstream& is);
     void parseNextStates(std::ifstream& is, State* states);
-    State& getNextState(Bazis bazis) const;
+    int getNextStateIndex(Bazis bazis) const;
     char* getName() const;
-    bool getValue() const;
+    bool getOutput() const;
     ~State();
 };
 
@@ -49,7 +49,7 @@ public:
  */
 class Allapotgep {
     State* states = NULL;
-    State* currentState;
+    int currentStateIndex;
 public:
     /**
      * Konfig fájl beolvasása. Ha a fájl nem létezik/nem lehet megnyitni eldobja a NEPTUN-kódot.

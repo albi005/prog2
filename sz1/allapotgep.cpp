@@ -18,8 +18,8 @@ char* State::getName() const {
     return name;
 }
 
-bool State::getValue() const {
-    return value;
+bool State::getOutput() const {
+    return output;
 }
 
 void Allapotgep::konfigural(const char* fajlnev) {
@@ -33,7 +33,7 @@ void Allapotgep::konfigural(const char* fajlnev) {
     delete[] states;
     states = new State[n];
     for (int i = 0; i < n; i++) {
-        states[i].parseValueAndName(f);
+        states[i].parseOutputAndName(f);
     }
     for (int i = 0; i < n; i++) {
         states[i].parseNextStates(f, states);
@@ -44,25 +44,25 @@ void Allapotgep::konfigural(const char* fajlnev) {
     f.close();
 }
 
-void State::parseValueAndName(std::ifstream& is) {
+void State::parseOutputAndName(std::ifstream& is) {
     char c;
     is >> c;
     if (c != 'I' && c != 'H') throw "GL6IFB";
-    value = c == 'I';
+    output = c == 'I';
     name = new char[20];
     is >> name;
 }
 
 void State::parseNextStates(std::ifstream& is, State* states) {
     int stateIndex = 0;
-    nextStates = new State*[4];
+    nextStateIndexes = new int[4];
     while (true) {
         char c;
         is >> c;
 
         if (c != '0') {
             Bazis bazis = cast(c);
-            nextStates[bazis] = states + stateIndex;
+            nextStateIndexes[bazis] = stateIndex;
         }
 
         if (is.peek() == ' ') {
@@ -75,20 +75,20 @@ void State::parseNextStates(std::ifstream& is, State* states) {
     }
 }
 
-State& State::getNextState(Bazis bazis) const {
-    return *nextStates[bazis];
+int State::getNextStateIndex(Bazis bazis) const {
+    return nextStateIndexes[bazis];
 }
 
 const char* Allapotgep::aktualisallapot() {
-    return currentState->getName();
+    return states[currentStateIndex].getName();
 }
 
 bool Allapotgep::elfogad() {
-    return currentState->getValue();
+    return states[currentStateIndex].getOutput();
 }
 
 void Allapotgep::atmenet(Bazis b) {
-    currentState = &currentState->getNextState(b);
+    currentStateIndex = states[currentStateIndex].getNextStateIndex(b);
 }
 
 bool Allapotgep::feldolgoz(const Bazis* b, int n) {
@@ -99,12 +99,12 @@ bool Allapotgep::feldolgoz(const Bazis* b, int n) {
 }
 
 void Allapotgep::alaphelyzet() {
-    currentState = states;
+    currentStateIndex = 0;
 }
 
 State::~State() {
     delete[] name;
-    delete[] nextStates;
+    delete[] nextStateIndexes;
 }
 
 Allapotgep::~Allapotgep() {

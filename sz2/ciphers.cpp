@@ -30,7 +30,7 @@ char caesarEncode(char c, int offset) {
     return a + 'a';
 }
 
-string CaesarCipher::encode(const string& message) {
+string CaesarCipher::encode(const string& message) const {
     string res(message.size(), 0);
     for (size_t i = 0; i < res.size(); i++) {
         res[i] = caesarEncode(message[i], shift);
@@ -38,7 +38,7 @@ string CaesarCipher::encode(const string& message) {
     return res;
 }
 
-std::string CaesarCipher::decode(const std::string& ciphertext) {
+string CaesarCipher::decode(const std::string& ciphertext) const {
     string res(ciphertext.size(), 0);
     for (size_t i = 0; i < res.size(); i++) {
         char c = ciphertext[i];
@@ -67,20 +67,62 @@ char myCipherEncode(char c, size_t i, string key, int offset,
     return a + 'a';
 }
 
-std::string MyCipher::encode(const std::string& message) {
+std::string MyCipher::encode(const std::string& message) const {
     string res(message.size(), 0);
     for (size_t i = 0; i < res.size(); i++) {
         res[i] = myCipherEncode(message[i], i, key, offset);
     }
     return res;
 }
-std::string MyCipher::decode(const std::string& ciphertext) {
+
+std::string MyCipher::decode(const std::string& ciphertext) const {
     string res(ciphertext.size(), 0);
     for (size_t i = 0; i < res.size(); i++) {
         res[i] = myCipherEncode(ciphertext[i], i, key, offset, true);
     }
     return res;
 }
+
 Cipher* MyCipher::clone() const { return new MyCipher(key, offset); }
 
 MyCipher::~MyCipher() {}
+
+// CipherQueue
+CipherQueue::CipherQueue(CipherQueue const& other) {
+    len = other.len;
+    pData = new Cipher*[len];
+    for (size_t i = 0; i < len; i++)
+        pData[i] = other.pData[i]->clone();
+}
+
+void CipherQueue::add(Cipher* cipher) {
+    len += 1;
+    Cipher** oldData = pData;
+    pData = new Cipher*[len];
+    for (size_t i = 0; i < len - 1; i++)
+        pData[i] = oldData[i];
+    pData[len - 1] = cipher;
+    delete[] oldData;
+}
+
+std::string CipherQueue::encode(const std::string& message) const {
+    string res = message;
+    for (size_t i = 0; i < len; i++)
+        res = pData[i]->encode(res);
+    return res;
+}
+
+std::string CipherQueue::decode(const std::string& ciphertext) const {
+    string res = ciphertext;
+    for (size_t i = 0; i < len; i++)
+        res = pData[i]->decode(res);
+    return res;
+}
+
+Cipher* CipherQueue::clone() const { return new CipherQueue(*this); }
+
+CipherQueue::~CipherQueue() { 
+    for (size_t i = 0; i < len; i++)
+        delete pData[i];
+    delete[] pData;
+}

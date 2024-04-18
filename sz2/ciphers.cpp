@@ -15,77 +15,55 @@ using std::string;
 
 const int alphabetLength = 'z' - 'a' + 1;
 
-// From https://stackoverflow.com/a/62917051/13695737
+// BSz1 mod
+// from https://stackoverflow.com/a/62917051/13695737
 int mod(const int a, const int m) { return (a % m + m) % m; }
 
-// CaesarCipher
-char caesarEncode(char c, int offset) {
+char ShiftCipher::encodeChar(char c, size_t index, bool invert) const {
     if (c == ' ')
         return ' ';
     if (c < 'a' || c > 'z')
         throw "GL6IFB";
-    int a = c - 'a';
-    a += offset;
-    a = mod(a, alphabetLength);
-    return a + 'a';
+    int indexFromA = c - 'a';
+
+    int shift = getShift(indexFromA, index);
+    if (invert)
+        shift *= -1;
+    indexFromA += shift;
+
+    indexFromA = mod(indexFromA, alphabetLength);
+    return indexFromA + 'a';
 }
 
-string CaesarCipher::encode(const string& message) const {
-    string res(message.size(), 0);
+string ShiftCipher::encode(const string& s, bool invert) const {
+    string res(s.size(), 0);
     for (size_t i = 0; i < res.size(); i++) {
-        res[i] = caesarEncode(message[i], shift);
+        res[i] = encodeChar(s[i], i, invert);
     }
     return res;
 }
 
-string CaesarCipher::decode(const std::string& ciphertext) const {
-    string res(ciphertext.size(), 0);
-    for (size_t i = 0; i < res.size(); i++) {
-        char c = ciphertext[i];
-        c = caesarEncode(c, -shift);
-        res[i] = c;
-    }
-    return res;
+string ShiftCipher::encode(const string& message) const {
+    return encode(message, false);
+}
+
+string ShiftCipher::decode(const string& ciphertext) const {
+    return encode(ciphertext, true);
+}
+
+// CaesarCipher
+int CaesarCipher::getShift(char indexFromA, size_t index) const {
+    return shift;
 }
 
 Cipher* CaesarCipher::clone() const { return new CaesarCipher(shift); }
 
 // MyCipher
-char myCipherEncode(char c, size_t i, string key, int offset,
-                    bool invert = false) {
-    if (c == ' ')
-        return ' ';
-    if (c < 'a' || c > 'z')
-        throw "GL6IFB";
-
-    int a = c - 'a'; // abs representation: a->0, b->1
-    int shift = offset + i + (key[i % key.size()] - 'a');
-    if (invert)
-        shift *= -1;
-    a += shift;
-    a = mod(a, alphabetLength);
-    return a + 'a';
-}
-
-std::string MyCipher::encode(const std::string& message) const {
-    string res(message.size(), 0);
-    for (size_t i = 0; i < res.size(); i++) {
-        res[i] = myCipherEncode(message[i], i, key, offset);
-    }
-    return res;
-}
-
-std::string MyCipher::decode(const std::string& ciphertext) const {
-    string res(ciphertext.size(), 0);
-    for (size_t i = 0; i < res.size(); i++) {
-        res[i] = myCipherEncode(ciphertext[i], i, key, offset, true);
-    }
-    return res;
+int MyCipher::getShift(char indexFromA, size_t index) const {
+    return this->offset + index + (key[index % key.size()] - 'a');
 }
 
 Cipher* MyCipher::clone() const { return new MyCipher(key, offset); }
-
-MyCipher::~MyCipher() {}
 
 // CipherQueue
 CipherQueue::CipherQueue(CipherQueue const& other) {
@@ -121,7 +99,7 @@ std::string CipherQueue::decode(const std::string& ciphertext) const {
 
 Cipher* CipherQueue::clone() const { return new CipherQueue(*this); }
 
-CipherQueue::~CipherQueue() { 
+CipherQueue::~CipherQueue() {
     for (size_t i = 0; i < len; i++)
         delete pData[i];
     delete[] pData;

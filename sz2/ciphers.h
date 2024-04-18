@@ -34,35 +34,45 @@ class Cipher {
      * @return  a létrehozott objektumra mutató pointer
      */
     virtual Cipher* clone() const = 0;
-    /**
-     * Alap destruktor
-     */
+
     virtual ~Cipher(){};
 };
 
-// Osztályok, amiket meg kell csinálni a leírások és az osztálydiagram alapján
-class CaesarCipher : public Cipher {
+class ShiftCipher : public Cipher {
+  public:
+    std::string encode(const std::string& message) const;
+    std::string decode(const std::string& ciphertext) const;
+
+  protected:
+    virtual int getShift(char indexFromA, size_t index) const = 0;
+
+  private:
+    char encodeChar(char c, size_t index, bool invert) const;
+    std::string encode(const std::string& s, bool invert) const;
+};
+
+class CaesarCipher : public ShiftCipher {
     int shift;
 
   public:
     CaesarCipher(int shift) : shift(shift) {}
-    std::string encode(const std::string& message) const;
-    std::string decode(const std::string& ciphertext) const;
     Cipher* clone() const;
-    ~CaesarCipher(){};
+
+  protected:
+    virtual int getShift(char indexFromA, size_t index) const;
 };
 
-class MyCipher : public Cipher {
+class MyCipher : public ShiftCipher {
     std::string key;
     int offset;
 
   public:
     MyCipher(std::string key) : MyCipher(key, 0) {}
     MyCipher(std::string key, int offset) : key(key), offset(offset) {}
-    std::string encode(const std::string& message) const;
-    std::string decode(const std::string& ciphertext) const;
     Cipher* clone() const;
-    ~MyCipher();
+
+  protected:
+    virtual int getShift(char indexFromA, size_t index) const;
 };
 
 class CipherQueue : public Cipher {

@@ -11,3 +11,4 @@ result
 **.exe
 cmake-build-debug
 **.o
+doxygen

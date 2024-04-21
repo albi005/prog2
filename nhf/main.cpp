@@ -19,10 +19,10 @@ int main() {
     OstreamCanvas canvas = OstreamCanvas(std::cout);
 
     while (true) {
+        app.draw(canvas);
         canvas.handleEscapeCode(std::cin);
         char input = getchar();
         if (!app.handleInput(input) && input == 27) // TODO: use constant
             break;
-        app.draw(canvas);
     }
 }

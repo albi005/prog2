@@ -114,6 +114,7 @@ class ListView : public View {
   public:
     ListView(std::vector<ListRange*>* ranges);
     virtual void draw(const ICanvas&);
+    virtual bool handleInput(char input);
 };
 
 #endif

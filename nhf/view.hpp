@@ -12,7 +12,7 @@ class View {
   public:
     View() {}
     virtual void draw(const ICanvas&) = 0; // non-const to allow caching
-    virtual bool handleInput(char input);
+    virtual bool handleInput(char input) {return false;}
     virtual ~View() {}
 };
 

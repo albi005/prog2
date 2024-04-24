@@ -14,7 +14,8 @@ int main() {
         new AnimalsTab(data, *pageStack),
         *pageStack
     ));
-    App app = App(pageStack);
+
+    App app(pageStack);
 
     OstreamCanvas canvas = OstreamCanvas(std::cout);
 

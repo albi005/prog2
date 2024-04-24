@@ -1,14 +1,14 @@
 #ifndef APPVIEW_HPP
 #define APPVIEW_HPP
 
-#include "callback.hpp"
 #include "data.hpp"
 #include "listview.hpp"
 #include "utils.hpp"
+#include <functional>
 
 class VaxItemsRange : public ListRange {
     AppData& appData;
-    ShowDetailsCallback<Owner>& openOwner;
+    std::function<void(Owner&)> openOwner;
 
     bool getIsInteractive() const { return true; }
     void draw(
@@ -19,25 +19,24 @@ class VaxItemsRange : public ListRange {
     ) const;
 
   public:
-    VaxItemsRange(AppData& appData, ShowDetailsCallback<Owner>& openOwner)
+    VaxItemsRange(AppData& appData, std::function<void(Owner&)> openOwner)
         : appData(appData), openOwner(openOwner) {}
 };
 
-class VaxTab : public ContentView, public ShowDetailsCallback<Owner> {
+class VaxTab : public ContentView {
     AppData& appData;
     PageStack& pageStack;
 
   public:
     VaxTab(AppData& appData, PageStack& pageStack)
-        : ContentView(new ListView(
-              new std::vector<ListRange*>{new VaxItemsRange(appData, *this)}
-          )),
+        : ContentView(new ListView(new std::vector<ListRange*>{
+              new VaxItemsRange(
+                  appData, [this](Owner& owner) { /* TODO: open owner page */ }
+              )})),
           appData(appData), pageStack(pageStack) {}
-    void showDetails(Owner& owner);
-    void deleteEntity(Owner& owner);
 };
 
-class OwnersTab : public ContentView, public CreateEntityCallback {
+class OwnersTab : public ContentView {
     AppData& appData;
     PageStack& pageStack;
     std::string searchTerm = "";
@@ -46,15 +45,13 @@ class OwnersTab : public ContentView, public CreateEntityCallback {
     OwnersTab(AppData& appData, PageStack& pageStack)
         : ContentView(new ListView(new std::vector<ListRange*>{
               new EditablePropertyRange("Keresés", searchTerm),
-              new AddButtonRange(*this)
-          })),
+              new AddButtonRange([this]() { /* TODO: create and open owner */ })})),
           appData(appData), pageStack(pageStack) {}
-    void createEntity();
 };
 
 class TreatmentsRange : public ListRange {
     Animal& animal;
-    DeleteEntityCallback<Treatment>& deleteTreatment;
+    std::function<void()> deleteTreatment;
     StringEditor* treatmentNameEditor = nullptr;
 
     bool getIsInteractive() const { return true; }
@@ -68,12 +65,12 @@ class TreatmentsRange : public ListRange {
 
   public:
     TreatmentsRange(
-        Animal& animal, DeleteEntityCallback<Treatment>& deleteTreatment
+        Animal& animal, std::function<void()> deleteTreatment
     )
         : animal(animal), deleteTreatment(deleteTreatment) {}
 };
 
-class AnimalPage : public ContentView, public OpenLinkCallback {
+class AnimalPage : public ContentView {
     Animal& animal;
 
   public:
@@ -81,20 +78,19 @@ class AnimalPage : public ContentView, public OpenLinkCallback {
         : ContentView(new ListView(new std::vector<ListRange*>{
               new EditablePropertyRange("Név", animal.name),
               new EditablePropertyRange("Faj", animal.species),
-              new LinkPropertyRange("Tulajdonos", animal.owner->name, *this),
+              new LinkPropertyRange("Tulajdonos", animal.owner->name, [this](){ /* TODO: open owner */ }),
               new PropertyRange("Cím", animal.owner->address),
           })),
           animal(animal) {}
-    void openLink(); // open owner
 };
 
-class AnimalsTab : public ContentView, public CreateEntityCallback {
+class AnimalsTab : public ContentView {
     AppData& appData;
     PageStack& pageStack;
 
   public:
     AnimalsTab(AppData& appData, PageStack& pageStack)
-        : ContentView(new ListView(new std::vector<ListRange*>{/* TODO */})),
+        : ContentView(new ListView(new std::vector<ListRange*>{/* TODO: add animals tab ranges */})),
           appData(appData), pageStack(pageStack) {}
     void createEntity();
 };

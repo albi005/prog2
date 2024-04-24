@@ -1,6 +1,6 @@
 local dap = require('dap')
 
-local options = "-g -D MEMTRACE -D DEBUG -O0 -U _FORTIFY_SOURCE"
+local options = "-g -D MEMTRACE -D DEBUG -O0 -U _FORTIFY_SOURCE --std=c++11"
 
 dap.configurations.cpp = {
     {

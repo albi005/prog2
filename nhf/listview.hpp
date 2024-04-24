@@ -1,10 +1,10 @@
 #ifndef LISTVIEW_HPP
 #define LISTVIEW_HPP
 
-#include "callback.hpp"
 #include "canvas.hpp"
 #include "utils.hpp"
 #include "view.hpp"
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -58,7 +58,7 @@ class EditablePropertyRange : public PropertyRange {
 };
 
 class LinkPropertyRange : public PropertyRange {
-    OpenLinkCallback& open;
+    std::function<void()> open;
 
     virtual bool getIsInteractive() const { return true; }
     virtual void draw(
@@ -71,7 +71,7 @@ class LinkPropertyRange : public PropertyRange {
 
   public:
     LinkPropertyRange(
-        const char* title, std::string& value, OpenLinkCallback& open
+        const char* title, std::string& value, std::function<void()> open
     )
         : PropertyRange(title, value), open(open) {}
     bool handleInput(char input);
@@ -92,7 +92,7 @@ class PaddingRange : public ListRange {
 };
 
 class AddButtonRange : public ListRange {
-    CreateEntityCallback& createEntity;
+    std::function<void()> createEntity;
     virtual bool getIsInteractive() const { return true; }
     virtual void draw(
         const ICanvas& canvas,
@@ -103,7 +103,7 @@ class AddButtonRange : public ListRange {
     virtual void handleInput(char input, size_t selectedIndex) const;
 
   public:
-    AddButtonRange(CreateEntityCallback& createEntity)
+    AddButtonRange(std::function<void()> createEntity)
         : createEntity(createEntity) {}
 };
 

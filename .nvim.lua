@@ -34,22 +34,28 @@ dap.adapters.cppdbg = {
     command = os.getenv'OPEN_DEBUG_PATH',
 }
 
--- compile and run, pass in input if it exists
-vim.keymap.set('n', '<Leader>r', function ()
+-- !g++ ~/src/prog2/examples/example/*.cpp
+local function compileCmd()
     local dir = vim.fn.expand('%:h')
-    local cmd = '!g++ ' .. options .. ' '.. dir .. '/*.cpp && ./a.out'
+    local cmd = '!g++ ' .. options .. ' '.. dir .. '/*.cpp'
+    return cmd
+end
+
+-- compile and run
+vim.keymap.set('n', '<Leader>r', function ()
+    local cmd = compileCmd() .. ' && ./a.out'
     vim.cmd(cmd)
 end)
 
 -- compile and run in an interactive shell
 vim.keymap.set('n', '<Leader>t', function ()
-    local cmd
-    cmd = '!g++ ' .. options .. ' "' .. vim.fn.expand('%') .. '"'
-    vim.cmd(cmd)
+    vim.cmd(compileCmd())
 
-    local dir = vim.fn.expand('%:p:h')
+    local subdir = vim.fn.expand('%:p:h')
+    local root = vim.fn.getcwd()
 
-    vim.cmd(':te (cd ' .. dir .. ' && ../a.out)')
+    -- cd examples/example && ~/src/prog2/a.out
+    vim.cmd(':te (cd ' .. subdir .. ' && ' .. root .. '/a.out)')
 end)
 
 vim.keymap.set('n', '<Leader>h', ':ClangdSwitchSourceHeader<CR>');

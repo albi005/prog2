@@ -3,11 +3,12 @@
     packages = with pkgs; [
         bear
         clang-tools
+        cmake
+        doxygen_gui
         gcc
         gdb
-        zip
-        doxygen_gui
         graphviz
+        zip
     ];
     shellHook = ''
         export OPEN_DEBUG_PATH=${pkgs.vscode-extensions.ms-vscode.cpptools}/share/vscode/extensions/ms-vscode.cpptools/debugAdapters/bin/OpenDebugAD7;

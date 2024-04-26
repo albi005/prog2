@@ -2,4 +2,6 @@
 
 cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" || exit 1
 
-zip -r "nhf.zip" *.c *.h owners animals treatments *.pdf
+mkdir -p out/submit
+zip -r "out/submit/src.zip" *.cpp *.hpp *.h
+zip -r "out/submit/data.zip" owners animals treatments

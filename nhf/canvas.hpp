@@ -5,19 +5,41 @@
 #include <iostream>
 #include <string>
 
-typedef uint32_t Color;
+// 32-bit ARGB color
+struct Color {
+    uint32_t argb;
+
+  public:
+    /*implicit*/ Color(uint32_t argb); // NOLINT(*-explicit-constructor)
+    uint32_t r() const;
+    uint32_t g() const;
+    uint32_t b() const;
+    void printRgb(std::ostream& os);
+    bool operator==(const Color& other) const;
+};
+
+std::ostream& operator<<(std::ostream& os, Color color);
+
 struct Size;
+
 struct Point {
     int x, y;
-    Point(int x, int y) : x(x), y(y) {}
-    Point(const Size& size);
+
+  public:
+    Point(int x, int y);
+    /*implicit*/ Point(const Size& size); // NOLINT(*-explicit-constructor)
 };
+
 struct Size {
     int w, h;
-    Size(int w, int h) : w(w), h(h) {}
-    Size(const Point& point) : w(point.x), h(point.y) {}
+
+    Size() = default;
+
+    Size(int w, int h);
+
+    /*implicit*/ Size(const Point& point); // NOLINT(*-explicit-constructor)
 };
-inline Point::Point(const Size& size) : x(size.w), y(size.h) {}
+
 struct Rect {
     int x, y, w, h;
 };
@@ -25,42 +47,27 @@ struct Rect {
 class ICanvas {
   public:
     virtual Size getSize() const = 0;
+
     virtual void drawText(const std::string& text, Color fg, Color bg) = 0;
+
     virtual void
         drawText(const std::string& text, Point pos, Color fg, Color bg) = 0;
 };
 
-class OstreamCanvas : public ICanvas {
-    std::ostream& os;
-
-  protected:
-    int width, height;
-
-  public:
-    OstreamCanvas(std::ostream& os) : os(os) {}
-    bool handleEscapeCode(std::istream&);
-    Size getSize() const { return Size(width, height); }
-    void drawText(const std::string& text, Color fg, Color bg);
-    void drawText(const std::string& text, Point pos, Color fg, Color bg);
-};
-
-class PaddedCanvas : public ICanvas {
+class PaddedCanvas final : public ICanvas {
     int l, t, r, b;
     ICanvas& inner;
-    virtual void
-        drawText(const std::string& text, Point pos, Color fg, Color bg) {
-        ICanvas::drawText(text, Point(pos.x + l, pos.y + t), fg, bg);
-    }
-    virtual Size getSize() const {
-        Size orig = inner.getSize();
-        return Size(orig.w - l - r, orig.h - t - b);
-    }
+
+    virtual void drawText(const std::string& text, Color fg, Color bg) override;
+
+    virtual void drawText(
+        const std::string& text, Point pos, Color fg, Color bg
+    ) override;
+
+    virtual Size getSize() const override;
 
   public:
-    PaddedCanvas(int l, int t, int r, int b, ICanvas& inner)
-        : l(l), t(t), r(r), b(b), inner(inner) {}
-    PaddedCanvas(int x, int y, ICanvas& inner)
-        : PaddedCanvas(x, y, x, y, inner) {}
+    PaddedCanvas(int l, int t, int r, int b, ICanvas& inner);
 };
 
 #endif

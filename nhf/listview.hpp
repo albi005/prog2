@@ -10,101 +10,106 @@
 
 class ListRange {
   public:
-    virtual void onBeforeMeasure() {}
-    virtual int getHeight() const { return 1; }
-    virtual bool getIsInteractive() const { return false; }
     virtual void draw(
-        const ICanvas& canvas,
+        ICanvas& canvas,
         size_t firstIndex,
         size_t lastIndex,
         size_t selectedIndex
     ) const = 0;
-    virtual void handleInput(char input, size_t selectedIndex) const {}
-    virtual ~ListRange() {}
+
+    virtual void onBeforeMeasure();
+    virtual int getHeight() const;
+    virtual bool getIsInteractive() const;
+    virtual bool handleInput(char input, size_t selectedIndex) const;
+
+    virtual ~ListRange();
 };
 
 class PropertyRange : public ListRange {
     const char* title;
     std::string& value;
+
     virtual void draw(
-        const ICanvas& canvas,
+        ICanvas& canvas,
         size_t firstIndex,
         size_t lastIndex,
         size_t selectedIndex
-    ) const;
+    ) const override;
 
   public:
-    PropertyRange(const char* title, std::string& value)
-        : title(title), value(value) {}
-    virtual ~PropertyRange() {}
+    PropertyRange(const char* title, std::string& value);
+    virtual ~PropertyRange();
 };
 
 class EditablePropertyRange : public PropertyRange {
     StringEditor* editor = nullptr;
-    virtual bool getIsInteractive() const { return true; }
+
     virtual void draw(
-        const ICanvas& canvas,
+        ICanvas& canvas,
         size_t firstIndex,
         size_t lastIndex,
         size_t selectedIndex
-    ) const;
-    virtual void handleInput(char input, size_t selectedIndex) const;
+    ) const override;
+
+    virtual bool getIsInteractive() const override;
+    virtual bool handleInput(char input, size_t selectedIndex) const override;
 
   public:
-    EditablePropertyRange(const char* title, std::string& value)
-        : PropertyRange(title, value) {}
-    bool handleInput(char input);
+    EditablePropertyRange(const char* title, std::string& value);
     virtual ~EditablePropertyRange();
 };
 
 class LinkPropertyRange : public PropertyRange {
     std::function<void()> open;
 
-    virtual bool getIsInteractive() const { return true; }
+    virtual bool getIsInteractive() const override;
+
     virtual void draw(
-        const ICanvas& canvas,
+        ICanvas& canvas,
         size_t firstIndex,
         size_t lastIndex,
         size_t selectedIndex
-    ) const;
-    virtual void handleInput(char input, size_t selectedIndex) const;
+    ) const override;
+
+    bool handleInput(char input, size_t selectedIndex) const override;
 
   public:
     LinkPropertyRange(
         const char* title, std::string& value, std::function<void()> open
-    )
-        : PropertyRange(title, value), open(open) {}
-    bool handleInput(char input);
-    virtual ~LinkPropertyRange();
+    );
+
+    virtual ~LinkPropertyRange() override;
 };
 
 class PaddingRange : public ListRange {
     int height;
 
   public:
-    PaddingRange(int height = 1) : height(height) {}
-    virtual void draw(
-        const ICanvas& canvas,
-        size_t firstIndex,
-        size_t lastIndex,
-        size_t selectedIndex
-    ) const = 0;
-};
+    PaddingRange(int height = 1);
 
-class AddButtonRange : public ListRange {
-    std::function<void()> createEntity;
-    virtual bool getIsInteractive() const { return true; }
     virtual void draw(
-        const ICanvas& canvas,
+        ICanvas& canvas,
         size_t firstIndex,
         size_t lastIndex,
         size_t selectedIndex
     ) const;
-    virtual void handleInput(char input, size_t selectedIndex) const;
+};
+
+class AddButtonRange : public ListRange {
+    std::function<void()> createEntity;
+
+    virtual void draw(
+        ICanvas& canvas,
+        size_t firstIndex,
+        size_t lastIndex,
+        size_t selectedIndex
+    ) const override;
+
+    virtual bool getIsInteractive() const override;
+    virtual bool handleInput(char input, size_t selectedIndex) const override;
 
   public:
-    AddButtonRange(std::function<void()> createEntity)
-        : createEntity(createEntity) {}
+    AddButtonRange(std::function<void()> createEntity);
 };
 
 class ListView : public View {
@@ -113,8 +118,8 @@ class ListView : public View {
 
   public:
     ListView(std::vector<ListRange*>* ranges);
-    virtual void draw(const ICanvas&);
-    virtual bool handleInput(char input);
+    virtual void draw(ICanvas& canvas) override;
+    virtual bool handleInput(char input) override;
 };
 
 #endif

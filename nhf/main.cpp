@@ -1,13 +1,13 @@
 #include "appview.hpp"
-#include "canvas.hpp"
 #include "data.hpp"
+#include "ostream_canvas.hpp"
 #include "view.hpp"
 #include <iostream>
 
 int main() {
-    AppData data = AppData();
+    AppData data = AppData("owners", "animals", "treatments");
 
-    PageStack* pageStack = new PageStack();
+    auto* pageStack = new PageStack();
     pageStack->push(new Tabs(
         new VaxTab(data, *pageStack),
         new OwnersTab(data, *pageStack),
@@ -17,11 +17,11 @@ int main() {
 
     App app(pageStack);
 
-    OstreamCanvas canvas = OstreamCanvas(std::cout);
+    OstreamCanvas canvas(std::cout);
 
     while (true) {
         app.draw(canvas);
-        canvas.handleEscapeCode(std::cin);
+        canvas.updateScreenSize(std::cin);
         char input = getchar();
         if (!app.handleInput(input) && input == 27) // TODO: use constant
             break;

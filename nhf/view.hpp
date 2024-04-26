@@ -5,52 +5,56 @@
 #include <stack>
 
 class View {
+  public:
     // disable copying
     View(const View&) = delete;
     void operator=(const View&) = delete;
 
-  public:
-    View() {}
-    virtual void draw(const ICanvas&) = 0; // non-const to allow caching
-    virtual bool handleInput(char input) {return false;}
-    virtual ~View() {}
+    View() = default;
+    virtual void draw(ICanvas& canvas) = 0; // non-const to allow caching
+    virtual bool handleInput(char input);
+    virtual ~View() = default;
 };
 
 class ContentView : public View {
     View* content;
 
   protected:
-    ContentView(View* content) : content(content) {}
+    explicit ContentView(View* content);
 
   public:
-    void draw(const ICanvas&);
-    bool handleInput(char input);
-    virtual ~ContentView() { delete content; }
+    virtual void draw(ICanvas& canvas) override;
+    virtual bool handleInput(char input) override;
+    ~ContentView() override;
 };
 
-class Padding : public ContentView {
-    virtual void draw(const ICanvas&);
+class Padding final : public ContentView {
+    int l, t, r, b;
+
+    void draw(ICanvas& canvas) override;
 
   public:
-    Padding(View* content) : ContentView(content) {}
+    Padding(View* content, int l, int t, int r, int b);
+    Padding(View* content, int x, int y);
 };
 
 class StackablePage;
+
 class PageStack : public View {
     std::stack<StackablePage*> pages;
 
   public:
     void push(StackablePage* page);
     void pop();
-    virtual void draw(const ICanvas&);
-    ~PageStack();
+    virtual void draw(ICanvas& canvas) override;
+    ~PageStack() override;
 };
 
 class StackablePage : public virtual View {
     PageStack& pageStack;
 
   public:
-    StackablePage(PageStack& pageStack) : pageStack(pageStack) {}
+    explicit StackablePage(PageStack& pageStack);
     void pop();
     void push(StackablePage* page);
 };

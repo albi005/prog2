@@ -1,9 +1,8 @@
-#ifndef LISTVIEW_HPP
-#define LISTVIEW_HPP
+#pragma once
 
-#include "canvas.hpp"
+#include "Canvas.hpp"
+#include "View.hpp"
 #include "utils.hpp"
-#include "view.hpp"
 #include <functional>
 #include <string>
 #include <vector>
@@ -81,18 +80,20 @@ class LinkPropertyRange : public PropertyRange {
     virtual ~LinkPropertyRange() override;
 };
 
-class PaddingRange : public ListRange {
+class PaddingRange final : public ListRange {
     int height;
 
   public:
     PaddingRange(int height = 1);
 
-    virtual void draw(
+    void draw(
         ICanvas& canvas,
         size_t firstIndex,
         size_t lastIndex,
         size_t selectedIndex
-    ) const;
+    ) const override;
+
+    int getHeight() const override;
 };
 
 class AddButtonRange : public ListRange {
@@ -121,5 +122,3 @@ class ListView : public View {
     virtual void draw(ICanvas& canvas) override;
     virtual bool handleInput(char input) override;
 };
-
-#endif

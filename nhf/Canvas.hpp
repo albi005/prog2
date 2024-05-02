@@ -1,5 +1,4 @@
-#ifndef CANVAS_HPP
-#define CANVAS_HPP
+#pragma once
 
 #include <cstdint>
 #include <iostream>
@@ -69,5 +68,3 @@ class PaddedCanvas final : public ICanvas {
   public:
     PaddedCanvas(int l, int t, int r, int b, ICanvas& inner);
 };
-
-#endif

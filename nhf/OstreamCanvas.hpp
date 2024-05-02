@@ -1,7 +1,6 @@
-#ifndef OSTREAM_CANVAS_H
-#define OSTREAM_CANVAS_H
+#pragma once
 
-#include "canvas.hpp"
+#include "Canvas.hpp"
 
 class OstreamCanvas : public ICanvas {
     int width = 0, height = 0;
@@ -31,5 +30,3 @@ class Expect {
 };
 
 std::istream& operator>>(std::istream& is, Expect expect);
-
-#endif

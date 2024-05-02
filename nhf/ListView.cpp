@@ -1,4 +1,4 @@
-#include "listview.hpp"
+#include "ListView.hpp"
 
 void ListRange::onBeforeMeasure() {}
 
@@ -63,7 +63,9 @@ PaddingRange::PaddingRange(int height) : height(height) {}
 
 void PaddingRange::draw(
     ICanvas& canvas, size_t firstIndex, size_t lastIndex, size_t selectedIndex
-) const { /*TODO*/ }
+) const {}
+
+int PaddingRange::getHeight() const { return height; }
 
 bool AddButtonRange::getIsInteractive() const { return true; }
 

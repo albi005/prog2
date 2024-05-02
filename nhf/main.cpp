@@ -1,17 +1,17 @@
-#include "appview.hpp"
+#include "App.hpp"
+#include "OstreamCanvas.hpp"
+#include "View.hpp"
 #include "data.hpp"
-#include "ostream_canvas.hpp"
-#include "view.hpp"
 #include <iostream>
 
 int main() {
-    AppData data = AppData("owners", "animals", "treatments");
+    Data data = Data("owners", "animals", "treatments");
 
     auto* pageStack = new PageStack();
     pageStack->push(new Tabs(
-        new VaxTab(data, *pageStack),
-        new OwnersTab(data, *pageStack),
-        new AnimalsTab(data, *pageStack),
+        new VaccinationsPage(data, *pageStack),
+        new OwnersPage(data, *pageStack),
+        new AnimalsPage(data, *pageStack),
         *pageStack
     ));
 

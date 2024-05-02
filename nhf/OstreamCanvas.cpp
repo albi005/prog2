@@ -1,4 +1,4 @@
-#include "ostream_canvas.hpp"
+#include "OstreamCanvas.hpp"
 
 #define ESC "\x1b"
 

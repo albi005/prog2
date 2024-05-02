@@ -1,4 +1,4 @@
-#include "canvas.hpp"
+#include "Canvas.hpp"
 
 Color::Color(uint32_t argb) : argb(argb) {}
 

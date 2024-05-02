@@ -113,14 +113,14 @@ Ezek után a `main` függvény valahogy így fog kinézni:
 
 ```cpp
 // Adatok betöltése
-AppData data = AppData();
+Data data = Data();
 
 // View gráf inicializálása
 PageStack* pageStack = new PageStack();
 pageStack->push(new Tabs(
-    new VaxTab(data, *pageStack),
-    new OwnersTab(data, *pageStack),
-    new AnimalsTab(data, *pageStack),
+    new VaccinationsPage(data, *pageStack),
+    new OwnersPage(data, *pageStack),
+    new AnimalsPage(data, *pageStack),
     *pageStack
 ));
 App app = App(pageStack);

@@ -4,18 +4,30 @@ project(vetman2)
 set(CMAKE_CXX_STANDARD 17)
 
 add_executable(vetman2
-        appview.cpp
-        appview.hpp
-        canvas.cpp
-        canvas.hpp
+        AnimalPage.cpp
+        AnimalPage.hpp
+        AnimalsPage.cpp
+        AnimalsPage.hpp
+        OwnerPage.cpp
+        OwnerPage.hpp
+        OwnersPage.cpp
+        OwnersPage.hpp
+        VaccinationsPage.cpp
+        VaccinationsPage.hpp
+        App.cpp
+        App.hpp
+        Canvas.cpp
+        Canvas.hpp
         data.cpp
-        listview.cpp
+        ListView.cpp
         main.cpp
-        ostream_canvas.cpp
-        ostream_canvas.hpp
+        OstreamCanvas.cpp
+        OstreamCanvas.hpp
         utils.cpp
         utils.hpp
-        view.cpp
-        view.hpp
+        View.cpp
+        View.hpp
+        entities.cpp
+        entities.hpp
 )
 

@@ -1,7 +1,6 @@
-#ifndef VIEW_HPP
-#define VIEW_HPP
+#pragma once
 
-#include "canvas.hpp"
+#include "Canvas.hpp"
 #include <stack>
 
 class View {
@@ -16,7 +15,7 @@ class View {
     virtual ~View() = default;
 };
 
-class ContentView : public View {
+class ContentView : public virtual View {
     View* content;
 
   protected:
@@ -25,7 +24,7 @@ class ContentView : public View {
   public:
     virtual void draw(ICanvas& canvas) override;
     virtual bool handleInput(char input) override;
-    ~ContentView() override;
+    virtual ~ContentView() override;
 };
 
 class Padding final : public ContentView {
@@ -58,5 +57,3 @@ class StackablePage : public virtual View {
     void pop();
     void push(StackablePage* page);
 };
-
-#endif

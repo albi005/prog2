@@ -1,4 +1,4 @@
-#include "view.hpp"
+#include "View.hpp"
 
 bool View::handleInput(char input) {
     throw std::runtime_error("handleInput not implemented");

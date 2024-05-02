@@ -5,8 +5,8 @@
 
 class OwnersRange : public ListRange {
     Data& data;
-    std::function<void(Owner&)> openOwner;
     std::string& searchTerm;
+    std::function<void(Owner&)> openOwner;
 
     bool getIsInteractive() const override;
     void draw(

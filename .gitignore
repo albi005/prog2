@@ -1,6 +1,7 @@
 **.cbp
 **.exe
 **.gch
+**.html
 **.o
 **.out
 **.pdf
@@ -9,6 +10,7 @@
 **.cmake
 .direnv
 .idea
+.obsidian
 CMakeCache.txt
 CMakeFiles
 Testing

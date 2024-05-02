@@ -2,6 +2,7 @@
 #include "OstreamCanvas.hpp"
 #include "View.hpp"
 #include "data.hpp"
+#include "econio.h"
 #include <iostream>
 
 int main() {
@@ -22,8 +23,9 @@ int main() {
     while (true) {
         app.draw(canvas);
         canvas.updateScreenSize(std::cin);
-        char input = getchar();
-        if (!app.handleInput(input) && input == 27) // TODO: use constant
+        int input = econio_getch();
+        bool handled = app.handleInput(input);
+        if (!handled && input == KEY_ESCAPE)
             break;
     }
 }

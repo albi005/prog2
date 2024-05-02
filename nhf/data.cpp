@@ -16,6 +16,7 @@ AnimalRepository::AnimalRepository(TreatmentRepository& treatments)
 void AnimalRepository::load(std::istream& is, const OwnerRepository& owners) {
     Repository<Animal>::load(is);
     for (auto [id, animal] : entities) {
+        std::ignore = id;
         auto owner = owners.tryGetById(animal->ownerId);
         if (owner == nullptr)
             throw std::runtime_error("Owner not found");
@@ -39,6 +40,7 @@ void TreatmentRepository::load(
 ) {
     Repository<Treatment>::load(is);
     for (auto [id, treatment] : entities) {
+        std::ignore = id;
         auto animal = animals.tryGetById(treatment->animalId);
         if (animal == nullptr)
             throw std::runtime_error("Animal not found");

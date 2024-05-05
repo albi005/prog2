@@ -14,4 +14,4 @@ void Tabs::draw(ICanvas& canvas) { /* TODO */ }
 
 Tabs::~Tabs() { /* TODO */ }
 
-App::App(View* mainView) : ContentView(mainView) {}
+App::App(PageStack* pageStack) : ContentView(pageStack) {}

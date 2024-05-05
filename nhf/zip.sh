@@ -9,7 +9,7 @@ set -e
 
 cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" || exit 1
 
-rm -r out/submit
+rm -fr out/submit
 mkdir -p out/submit
 zip "out/submit/src.zip" *.cpp *.hpp *.c *.h
 zip "out/submit/data.zip" owners animals treatments

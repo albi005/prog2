@@ -8,6 +8,8 @@
 #include "utils.hpp"
 #include <functional>
 
+/// @brief A View that draws a tab bar at the top of the screen and the
+/// currently selected tab. Use Tab to switch between tabs.
 class Tabs : public virtual View, public StackablePage {
     VaccinationsPage* vaccinationsPage;
     OwnersPage* ownersPage;
@@ -26,5 +28,5 @@ class Tabs : public virtual View, public StackablePage {
 
 class App : public ContentView {
   public:
-    explicit App(View* mainView);
+    explicit App(PageStack* pageStack);
 };

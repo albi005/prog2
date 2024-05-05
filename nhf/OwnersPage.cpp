@@ -20,9 +20,17 @@ OwnersRange::OwnersRange(
 OwnersPage::OwnersPage(Data& data, PageStack& pageStack)
     : ContentView(new ListView(new std::vector<ListRange*>{
           new EditablePropertyRange("Keresés", searchTerm),
-          new AddButtonRange([&pageStack, data]() mutable {
+          new PaddingRange(),
+          new AddButtonRange([&pageStack, &data]() mutable {
               Owner* owner = data.owners.createNew();
               pageStack.push(new OwnerPage(*owner, data, pageStack));
-          })
+          }),
+          new OwnersRange(
+              data,
+              searchTerm,
+              [&pageStack, &data](Owner& owner) {
+                  pageStack.push(new OwnerPage(owner, data, pageStack));
+              }
+          ),
       })),
       data(data), pageStack(pageStack) {}

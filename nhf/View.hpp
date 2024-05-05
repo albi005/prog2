@@ -5,8 +5,7 @@
 
 class View {
   public:
-    // disable copying
-    View(const View&) = delete;
+    View(const View&) = delete; // disable copying of views
     void operator=(const View&) = delete;
 
     View() = default;
@@ -15,6 +14,7 @@ class View {
     virtual ~View() = default;
 };
 
+/// A View that delegates drawing and input handling to its child View
 class ContentView : public virtual View {
     View* content;
 
@@ -27,18 +27,20 @@ class ContentView : public virtual View {
     virtual ~ContentView() override;
 };
 
-class Padding final : public ContentView {
+/// A ContentView with padding
+class PaddingView final : public ContentView {
     int l, t, r, b;
 
     void draw(ICanvas& canvas) override;
 
   public:
-    Padding(View* content, int l, int t, int r, int b);
-    Padding(View* content, int x, int y);
+    PaddingView(View* content, int l, int t, int r, int b);
+    PaddingView(View* content, int x, int y);
 };
 
 class StackablePage;
 
+/// A stack of pages, drawn on top of each other
 class PageStack : public View {
     std::stack<StackablePage*> pages;
 
@@ -49,6 +51,8 @@ class PageStack : public View {
     ~PageStack() override;
 };
 
+/// Convenience class for pages that can be pushed onto a PageStack.
+/// Stores a reference to the PageStack
 class StackablePage : public virtual View {
     PageStack& pageStack;
 

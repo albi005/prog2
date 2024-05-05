@@ -14,12 +14,13 @@ bool ContentView::handleInput(char input) {
 
 ContentView::~ContentView() { delete content; }
 
-Padding::Padding(View* content, int l, int t, int r, int b)
+PaddingView::PaddingView(View* content, int l, int t, int r, int b)
     : ContentView(content), l(l), t(t), r(r), b(b) {}
 
-Padding::Padding(View* content, int x, int y) : Padding(content, x, y, x, y) {}
+PaddingView::PaddingView(View* content, int x, int y)
+    : PaddingView(content, x, y, x, y) {}
 
-void Padding::draw(ICanvas& canvas) {
+void PaddingView::draw(ICanvas& canvas) {
     PaddedCanvas padded(l, t, r, b, canvas);
     ContentView::draw(padded);
 }

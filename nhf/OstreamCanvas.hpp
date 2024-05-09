@@ -2,7 +2,7 @@
 
 #include "Canvas.hpp"
 
-class OstreamCanvas : public ICanvas {
+class OstreamCanvas final : public ICanvas {
     int width = 0, height = 0;
     Color currFgColor = 1, currBgColor = 1;
     std::ostream& os;
@@ -11,9 +11,10 @@ class OstreamCanvas : public ICanvas {
     explicit OstreamCanvas(std::ostream& os);
     void updateScreenSize(std::istream& is);
     Size getSize() const override;
-    void drawText(const std::string& text, Color fg, Color bg) override;
-    void drawText(const std::string& text, Point pos, Color fg, Color bg)
-        override;
+    std::ostream& setPosition(Point pos) override;
+    std::ostream& draw(Point pos, Color fg, Color bg) override;
+    std::ostream& draw(Color fg, Color bg) override;
+    operator std::ostream&() override;
 
   private:
     void setForegroundColor(Color color);

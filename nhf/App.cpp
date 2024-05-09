@@ -1,17 +1,50 @@
 #include "App.hpp"
 #include "AnimalPage.hpp"
+#include "constants.h"
 
-Tabs::Tabs(
-    VaccinationsPage* vaccinationsPage,
-    OwnersPage* ownersPage,
-    AnimalsPage* animalsPage,
-    PageStack& pageStack
-)
-    : StackablePage(pageStack), vaccinationsPage(vaccinationsPage),
-      ownersPage(ownersPage), animalsPage(animalsPage) {}
+Tabs::Tab::Tab(View& view, const char* title) : view(view), title(title) {}
 
-void Tabs::draw(ICanvas& canvas) { /* TODO */ }
+View& Tabs::Tab::getView() { return view; }
 
-Tabs::~Tabs() { /* TODO */ }
+const char* Tabs::Tab::getTitle() { return title; }
 
-App::App(PageStack* pageStack) : ContentView(pageStack) {}
+Tabs::Tabs(std::vector<Tab>* tabs, PageStack& pageStack)
+    : StackablePage(pageStack), tabs(*tabs) {}
+
+void Tabs::draw(ICanvas& canvas) {
+    const Color backdrop = SURFACE_CONTAINER_LOWEST;
+    const Color surface = SURFACE_CONTAINER;
+
+    canvas.setPosition({0, 0});
+    for (size_t i = 0; i < tabs.size(); ++i) {
+        bool isSelected = selectedIndex == i;
+        canvas.draw(
+            isSelected ? ON_SURFACE : ON_SURFACE_VARIANT,
+            isSelected ? surface : backdrop
+        ) << " "
+          << tabs[i].getTitle() << " ";
+    }
+
+    Tab& selectedTab = tabs[selectedIndex];
+    PaddedCanvas paddedCanvas(0, 1, 0, 0, canvas);
+    selectedTab.getView().draw(paddedCanvas);
+}
+
+bool Tabs::handleInput(char input) {
+    Tab& selectedTab = tabs[selectedIndex];
+    if (selectedTab.getView().handleInput(input))
+        return true;
+    if (input == KEY_TAB) {
+        selectedIndex++;
+        selectedIndex %= tabs.size();
+        return true;
+    }
+    return false;
+}
+
+Tabs::~Tabs() {
+    for (auto& tab : tabs)
+        delete &tab.getView();
+}
+
+App::App(PageStack& pageStack) : ContentView(&pageStack) {}

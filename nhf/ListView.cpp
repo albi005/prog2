@@ -85,4 +85,4 @@ ListView::ListView(std::vector<ListRange*>* ranges) { /*TODO*/ }
 
 void ListView::draw(ICanvas& canvas) { /*TODO*/ }
 
-bool ListView::handleInput(char input) { /*TODO*/ throw; }
+bool ListView::handleInput(char input) { /*TODO*/ return false; }

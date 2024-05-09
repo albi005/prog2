@@ -13,5 +13,6 @@ Language: Cpp
 DerivePointerAlignment: false
 PointerAlignment: Left
 SeparateDefinitionBlocks: Always
+IndentCaseLabels: true
 
 ...

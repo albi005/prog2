@@ -10,23 +10,30 @@
 
 /// @brief A View that draws a tab bar at the top of the screen and the
 /// currently selected tab. Use Tab to switch between tabs.
-class Tabs : public virtual View, public StackablePage {
-    VaccinationsPage* vaccinationsPage;
-    OwnersPage* ownersPage;
-    AnimalsPage* animalsPage;
+class Tabs final : public virtual View, public StackablePage {
+  public:
+    class Tab {
+        View& view;
+        const char* title;
+
+      public:
+        explicit Tab(View& view, const char* title);
+        View& getView();
+        const char* getTitle();
+    };
+
+  private:
+    size_t selectedIndex = 0;
+    std::vector<Tab>& tabs;
 
   public:
-    Tabs(
-        VaccinationsPage* vaccinationsPage,
-        OwnersPage* ownersPage,
-        AnimalsPage* animalsPage,
-        PageStack& pageStack
-    );
+    Tabs(std::vector<Tab>* tabs, PageStack& pageStack);
     void draw(ICanvas& canvas) override;
-    virtual ~Tabs();
+    bool handleInput(char input) override;
+    ~Tabs();
 };
 
-class App : public ContentView {
+class App final : public ContentView {
   public:
-    explicit App(PageStack* pageStack);
+    explicit App(PageStack& pageStack);
 };

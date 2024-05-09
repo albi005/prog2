@@ -1,55 +1,66 @@
 #include "OstreamCanvas.hpp"
 
+// Fe Escape sequences
+// https://en.wikipedia.org/wiki/ANSI_escape_code#Fe_Escape_sequences
 #define ESC "\x1b"
+
+// Control Sequence Introducer
+// https://en.wikipedia.org/wiki/ANSI_escape_code#CSI_(Control_Sequence_Introducer)_sequences
+#define CSI ESC "["
 
 OstreamCanvas::OstreamCanvas(std::ostream& os) : os(os) {}
 
 void OstreamCanvas::updateScreenSize(std::istream& is) {
     setCursorPosition({9999, 9999});
-    os << ESC "[6n"; // ask for cursor position
+    os << CSI "6n"; // ask for cursor position
 
-    // response is ESC[y;xR
-    is >> Expect(ESC "[") >> height >> Expect(";") >> width >> Expect("R");
+    // response is CSIy;xR
+    is >> Expect(CSI) >> height >> Expect(";") >> width >> Expect("R");
 }
 
 Size OstreamCanvas::getSize() const { return {width, height}; }
 
-void OstreamCanvas::drawText(const std::string& text, Color fg, Color bg) {
+std::ostream& OstreamCanvas::setPosition(Point pos) {
+    setCursorPosition(pos);
+    return os;
+}
+
+std::ostream& OstreamCanvas::draw(Point pos, Color fg, Color bg) {
+    setCursorPosition(pos);
+    return os;
+}
+
+std::ostream& OstreamCanvas::draw(Color fg, Color bg) {
     setForegroundColor(fg);
     setBackgroundColor(bg);
-    os << text;
+    return os;
 }
 
-void OstreamCanvas::drawText(
-    const std::string& text, Point pos, Color fg, Color bg
-) {
-    setCursorPosition(pos);
-    drawText(text, fg, bg);
-}
+OstreamCanvas::operator std::ostream&() { return os; }
 
-// prints ESC[38;2;r;g;bm
+// prints CSI38;2;r;g;bm
 void OstreamCanvas::setForegroundColor(Color color) {
     if (currFgColor == color)
         return;
     currFgColor = color;
-    os << ESC "[38;2;";
+    os << CSI "38;2;";
     os << color;
     os << "m";
 }
 
-// prints ESC[48;2;r;g;bm
+// prints CSI48;2;r;g;bm
 void OstreamCanvas::setBackgroundColor(Color color) {
     if (currBgColor == color)
         return;
     currBgColor = color;
-    os << ESC "[48;2;";
+    os << CSI "48;2;";
     os << color;
     os << "m";
 }
 
-// prints ESC[y;xH
+// prints CSIy;xH
 void OstreamCanvas::setCursorPosition(Point position) {
-    os << ESC << "[" << position.y << ";" << position.x << "H";
+    os << CSI << position.y << ";" << position.x << "H";
 }
 
 Expect::Expect(const char* s) : s(s) {}

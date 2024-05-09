@@ -32,14 +32,24 @@ Size PaddedCanvas::getSize() const {
     return Size(orig.w - l - r, orig.h - t - b);
 }
 
-void PaddedCanvas::drawText(const std::string& text, Color fg, Color bg) {
-    inner.drawText(text, fg, bg);
+std::ostream& PaddedCanvas::setPosition(Point pos) {
+    pos.x += l;
+    pos.y += t;
+    return inner.setPosition(pos);
 }
 
-void PaddedCanvas::drawText(
-    const std::string& text, Point pos, Color fg, Color bg
-) {
-    inner.drawText(text, {pos.x + l, pos.y + t}, fg, bg);
+std::ostream& PaddedCanvas::draw(Point pos, Color fg, Color bg) {
+    pos.x += l;
+    pos.y += t;
+    return inner.draw(pos, fg, bg);
+}
+
+std::ostream& PaddedCanvas::draw(Color fg, Color bg) {
+    return inner.draw(fg, bg);
+}
+
+PaddedCanvas::operator std::ostream&() {
+    return inner.operator std::ostream&();
 }
 
 PaddedCanvas::PaddedCanvas(int l, int t, int r, int b, ICanvas& inner)

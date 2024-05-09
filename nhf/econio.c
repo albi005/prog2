@@ -4,133 +4,111 @@
 #include "memtrace.h"
 #endif
 
+#include "constants.h"
 #include "econio.h"
-
 
 #if defined(_WIN32) || defined(_WIN64)
 
-
-#include <windows.h>
-#include <stdio.h>
-#include <conio.h>
 #include <assert.h>
+#include <conio.h>
+#include <stdio.h>
+#include <windows.h>
 
 static WORD bgcolor = COL_BLACK;
 static WORD fgcolor = COL_LIGHTGRAY;
 static bool rawmode = false;
 
 static WORD colormap[] = {
-    [COL_BLACK]           = 0,
-    [COL_BLUE]            = FOREGROUND_BLUE,
-    [COL_GREEN]           = FOREGROUND_GREEN,
-    [COL_CYAN]            = FOREGROUND_GREEN | FOREGROUND_BLUE,
-    [COL_RED]             = FOREGROUND_RED,
-    [COL_MAGENTA]         = FOREGROUND_RED   | FOREGROUND_BLUE,
-    [COL_BROWN]           = FOREGROUND_RED   | FOREGROUND_GREEN,
-    [COL_LIGHTGRAY]       = FOREGROUND_RED   | FOREGROUND_GREEN | FOREGROUND_BLUE,
-    [COL_DARKGRAY]        = FOREGROUND_INTENSITY,
-    [COL_LIGHTBLUE]       = FOREGROUND_BLUE  | FOREGROUND_INTENSITY,
-    [COL_LIGHTGREEN]      = FOREGROUND_GREEN | FOREGROUND_INTENSITY,
-    [COL_LIGHTCYAN]       = FOREGROUND_GREEN | FOREGROUND_BLUE  | FOREGROUND_INTENSITY,
-    [COL_LIGHTRED]        = FOREGROUND_RED   | FOREGROUND_INTENSITY,
-    [COL_LIGHTMAGENTA]    = FOREGROUND_RED   | FOREGROUND_BLUE  | FOREGROUND_INTENSITY,
-    [COL_YELLOW]          = FOREGROUND_RED   | FOREGROUND_GREEN | FOREGROUND_INTENSITY,
-    [COL_WHITE]           = FOREGROUND_RED   | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY,
+    [COL_BLACK] = 0,
+    [COL_BLUE] = FOREGROUND_BLUE,
+    [COL_GREEN] = FOREGROUND_GREEN,
+    [COL_CYAN] = FOREGROUND_GREEN | FOREGROUND_BLUE,
+    [COL_RED] = FOREGROUND_RED,
+    [COL_MAGENTA] = FOREGROUND_RED | FOREGROUND_BLUE,
+    [COL_BROWN] = FOREGROUND_RED | FOREGROUND_GREEN,
+    [COL_LIGHTGRAY] = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE,
+    [COL_DARKGRAY] = FOREGROUND_INTENSITY,
+    [COL_LIGHTBLUE] = FOREGROUND_BLUE | FOREGROUND_INTENSITY,
+    [COL_LIGHTGREEN] = FOREGROUND_GREEN | FOREGROUND_INTENSITY,
+    [COL_LIGHTCYAN] = FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY,
+    [COL_LIGHTRED] = FOREGROUND_RED | FOREGROUND_INTENSITY,
+    [COL_LIGHTMAGENTA] =
+        FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY,
+    [COL_YELLOW] = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY,
+    [COL_WHITE] = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE |
+                  FOREGROUND_INTENSITY,
 };
 
 #define STDOUT GetStdHandle(STD_OUTPUT_HANDLE)
 
 void econio_gotoxy(int x, int y) {
     COORD dwCursorPosition;
-    dwCursorPosition.X = (SHORT) x;
-    dwCursorPosition.Y = (SHORT) y;
+    dwCursorPosition.X = (SHORT)x;
+    dwCursorPosition.Y = (SHORT)y;
     SetConsoleCursorPosition(STDOUT, dwCursorPosition);
 }
-
 
 void econio_textbackground(int newcolor) {
     if (newcolor == COL_RESET)
         newcolor = COL_BLACK;
     assert(newcolor >= 0 && newcolor < 16);
-    bgcolor = (WORD) (colormap[newcolor] << 4);
+    bgcolor = (WORD)(colormap[newcolor] << 4);
     SetConsoleTextAttribute(STDOUT, fgcolor | bgcolor);
 }
-
 
 void econio_textcolor(int newcolor) {
     if (newcolor == COL_RESET)
         newcolor = COL_LIGHTGRAY;
     assert(newcolor >= 0 && newcolor < 16);
-    fgcolor = (WORD) colormap[newcolor];
+    fgcolor = (WORD)colormap[newcolor];
     SetConsoleTextAttribute(STDOUT, fgcolor | bgcolor);
 }
-
 
 void econio_clrscr(void) {
     HANDLE hstdout = STDOUT;
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     if (GetConsoleScreenBufferInfo(hstdout, &csbi)) {
-        COORD coordScreen = { 0, 0 };
+        COORD coordScreen = {0, 0};
         DWORD cCharsWritten;
         DWORD dwConSize = csbi.dwSize.X * csbi.dwSize.Y;
-        FillConsoleOutputCharacter (hstdout, ' ', dwConSize, coordScreen, &cCharsWritten);
-        FillConsoleOutputAttribute (hstdout, csbi.wAttributes, dwConSize, coordScreen, &cCharsWritten);
-        SetConsoleCursorPosition   (hstdout, coordScreen);
+        FillConsoleOutputCharacter(
+            hstdout, ' ', dwConSize, coordScreen, &cCharsWritten
+        );
+        FillConsoleOutputAttribute(
+            hstdout, csbi.wAttributes, dwConSize, coordScreen, &cCharsWritten
+        );
+        SetConsoleCursorPosition(hstdout, coordScreen);
     }
 }
 
+void econio_flush() { fflush(stdout); }
 
-void econio_flush() {
-    fflush(stdout);
-}
+void econio_set_title(char const* title) { SetConsoleTitle(title); }
 
+void econio_rawmode() { rawmode = true; }
 
-void econio_set_title(char const *title) {
-    SetConsoleTitle(title);
-}
-
-
-void econio_rawmode() {
-    rawmode = true;
-}
-
-
-void econio_normalmode() {
-    rawmode = false;
-}
-
+void econio_normalmode() { rawmode = false; }
 
 bool econio_kbhit() {
     assert(rawmode);
     return _kbhit() != 0;
 }
 
-
 int econio_getch() {
     static struct {
         int code;
         EconioKey key;
     } windowskeycodes[] = {
-        {72, KEY_UP},
-        {80, KEY_DOWN},
-        {75, KEY_LEFT},
-        {77, KEY_RIGHT},
-        {73, KEY_PAGEUP},
-        {81, KEY_PAGEDOWN},
-        {71, KEY_HOME},
-        {79, KEY_END},
-        {82, KEY_INSERT},
-        {83, KEY_DELETE},
-        {141, KEY_CTRLUP},
-        {145, KEY_CTRLDOWN},
-        {115, KEY_CTRLLEFT},
-        {116, KEY_CTRLRIGHT},
-        {134, KEY_CTRLPAGEUP},
-        {118, KEY_CTRLPAGEDOWN},
-        {119, KEY_CTRLHOME},
-        {117, KEY_CTRLEND},
-        {146, KEY_CTRLINSERT},
-        {147, KEY_CTRLDELETE},
+        {72, KEY_UP},          {80, KEY_DOWN},
+        {75, KEY_LEFT},        {77, KEY_RIGHT},
+        {73, KEY_PAGEUP},      {81, KEY_PAGEDOWN},
+        {71, KEY_HOME},        {79, KEY_END},
+        {82, KEY_INSERT},      {83, KEY_DELETE},
+        {141, KEY_CTRLUP},     {145, KEY_CTRLDOWN},
+        {115, KEY_CTRLLEFT},   {116, KEY_CTRLRIGHT},
+        {134, KEY_CTRLPAGEUP}, {118, KEY_CTRLPAGEDOWN},
+        {119, KEY_CTRLHOME},   {117, KEY_CTRLEND},
+        {146, KEY_CTRLINSERT}, {147, KEY_CTRLDELETE},
         {-1, KEY_UNKNOWNKEY},
     };
 
@@ -150,63 +128,31 @@ int econio_getch() {
     return KEY_UNKNOWNKEY;
 }
 
-
-void econio_sleep(double sec) {
-    Sleep(sec * 1000);
-}
-
+void econio_sleep(double sec) { Sleep(sec * 1000); }
 
 #else // defined _WIN32
 
-
 #include <assert.h>
-#include <stdio.h>
-#include <termios.h>
-#include <unistd.h>
+#include <ctype.h>
 #include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
 #include <sys/time.h>
 #include <sys/types.h>
-#include <ctype.h>
-#include <string.h>
+#include <termios.h>
 #include <time.h>
+#include <unistd.h>
 
-
-void econio_textcolor(int color) {
-    static int colormap[] = { 30, 34, 32, 36, 31, 35, 33, 37, 90, 94, 92, 96, 91, 95, 93, 97, 39 };
-
-    assert(color >= 0 && color <= 16);
-    printf("\033[%dm", colormap[color]);
-}
-
-
-void econio_textbackground(int color) {
-    static int colormap[] = { 40, 44, 42, 46, 41, 45, 43, 47, 100, 104, 102, 106, 101, 105, 103, 107, 49 };
-
-    assert(color >= 0 && color <= 16);
-    printf("\033[%dm", colormap[color]);
-}
-
-
-void econio_gotoxy(int x, int y) {
-    printf("\033[%d;%dH", y+1, x+1);
-}
-
+void econio_gotoxy(int x, int y) { printf("\033[%d;%dH", y + 1, x + 1); }
 
 void econio_clrscr() {
     printf("\033[2J");
     econio_gotoxy(0, 0);
 }
 
+void econio_flush() { fflush(stdout); }
 
-void econio_flush() {
-    fflush(stdout);
-}
-
-
-void econio_set_title(char const *title) {
-    printf("\033]2;%s\007", title);
-}
-
+void econio_set_title(char const* title) { printf("\033]2;%s\007", title); }
 
 void econio_rawmode() {
     int fd = fileno(stdin);
@@ -217,7 +163,6 @@ void econio_rawmode() {
     setvbuf(stdin, NULL, _IONBF, BUFSIZ);
 }
 
-
 void econio_normalmode() {
     int fd = fileno(stdin);
     struct termios attr;
@@ -227,14 +172,12 @@ void econio_normalmode() {
     setvbuf(stdin, NULL, _IOLBF, BUFSIZ);
 }
 
-
 static bool inrawmode() {
     int fd = fileno(stdin);
     struct termios attr;
     tcgetattr(fd, &attr);
     return (attr.c_lflag & (ICANON | ECHO)) == 0;
 }
-
 
 bool econio_kbhit() {
     assert(inrawmode());
@@ -254,15 +197,11 @@ bool econio_kbhit() {
     return retval != 0;
 }
 
-
-static int rawgetch() {
-    return fgetc(stdin);
-}
-
+static int rawgetch() { return fgetc(stdin); }
 
 int econio_getch() {
     static struct {
-        char const *escape;
+        char const* escape;
         EconioKey key;
     } unixkeycodes[] = {
         {"\033OP", KEY_F1},
@@ -303,24 +242,27 @@ int econio_getch() {
     econio_flush();
 
     enum { bufsize = 10 };
+
     char s[bufsize];
     int i = 0;
     s[i++] = rawgetch();
-    if (s[i-1] == 0x7F)
+    if (s[i - 1] == 0x7F)
         return KEY_BACKSPACE;
-    if (s[i-1] != 0x1B || !econio_kbhit())     // only an escape sequence if other chars can be read
-        return s[i-1];
+    if (s[i - 1] != 0x1B ||
+        !econio_kbhit()) // only an escape sequence if other chars can be read
+        return s[i - 1];
 
     // read following chars and concatenate to see the escape sequence
     s[i++] = rawgetch();
-    if (s[i-1] == 'O') {    // VT100 f1-f4: OP-OS
+    if (s[i - 1] == 'O') { // VT100 f1-f4: OP-OS
         s[i++] = rawgetch();
-    } else if (s[i-1] == '[') { // other: always delimited by uppercase char or tilde
+    } else if (s[i - 1] ==
+               '[') { // other: always delimited by uppercase char or tilde
         s[i++] = rawgetch();
-        while (!(isupper(s[i-1]) || s[i-1] == '~') && (i < bufsize-1))
+        while (!(isupper(s[i - 1]) || s[i - 1] == '~') && (i < bufsize - 1))
             s[i++] = rawgetch();
-    } else {    // unknown sequence, return verbatim
-        ungetc(s[i-1], stdin);
+    } else { // unknown sequence, return verbatim
+        ungetc(s[i - 1], stdin);
         return s[0];
     }
     s[i] = '\0';
@@ -330,13 +272,11 @@ int econio_getch() {
     return KEY_UNKNOWNKEY;
 }
 
-
 void econio_sleep(double sec) {
     struct timespec req, rem;
-    req.tv_sec = (time_t) sec;
-    req.tv_nsec = (long) ((sec - req.tv_sec) * 1e9);
+    req.tv_sec = (time_t)sec;
+    req.tv_nsec = (long)((sec - req.tv_sec) * 1e9);
     nanosleep(&req, &rem);
 }
-
 
 #endif // defined _WIN32

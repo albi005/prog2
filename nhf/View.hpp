@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Canvas.hpp"
-#include <stack>
+#include <vector>
 
 class View {
   public:
@@ -41,13 +41,14 @@ class PaddingView final : public ContentView {
 class StackablePage;
 
 /// A stack of pages, drawn on top of each other
-class PageStack : public View {
-    std::stack<StackablePage*> pages;
+class PageStack final : public View {
+    std::vector<StackablePage*> pages;
 
   public:
-    void push(StackablePage* page);
-    void pop();
-    virtual void draw(ICanvas& canvas) override;
+    void push(StackablePage* page); // takes ownership
+    void pop(const StackablePage& page);
+    void draw(ICanvas& canvas) override;
+    bool handleInput(char input) override;
     ~PageStack() override;
 };
 
@@ -56,8 +57,11 @@ class PageStack : public View {
 class StackablePage : public virtual View {
     PageStack& pageStack;
 
+  protected:
+    void popSelf();
+    void push(StackablePage* page); // takes ownership
+
   public:
     explicit StackablePage(PageStack& pageStack);
-    void pop();
-    void push(StackablePage* page);
+    virtual ~StackablePage() = default;
 };

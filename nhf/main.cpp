@@ -8,15 +8,22 @@
 int main() {
     Data data = Data("owners", "animals", "treatments");
 
-    auto* pageStack = new PageStack();
-    pageStack->push(new Tabs(
-        new VaccinationsPage(data, *pageStack),
-        new OwnersPage(data, *pageStack),
-        new AnimalsPage(data, *pageStack),
-        *pageStack
-    ));
+    auto& pageStack = *new PageStack();
+    auto tabs = new Tabs(
+        new std::vector<Tabs::Tab>{
+            Tabs::Tab(*new VaccinationsPage(data, pageStack), "Oltások"),
+            Tabs::Tab(*new OwnersPage(data, pageStack), "Tulajdonosok"),
+            Tabs::Tab(*new AnimalsPage(data, pageStack), "Állatok")
+        },
+        pageStack
+    );
+    pageStack.push(tabs);
 
     App app(pageStack);
+
+    // enable handling key presses as they come in
+    // instead of waiting for newlines
+    econio_rawmode();
 
     OstreamCanvas canvas(std::cout);
 
@@ -25,7 +32,7 @@ int main() {
         canvas.updateScreenSize(std::cin);
         int input = econio_getch();
         bool handled = app.handleInput(input);
-        if (!handled && input == KEY_ESCAPE)
+        if (!handled && (input == KEY_ESCAPE || input == 'q'))
             break;
     }
 }

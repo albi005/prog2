@@ -1,5 +1,5 @@
 CCX = g++
-CXXFLAGS = -Wall -Wdeprecated -pedantic -DMEMTRACE -g 
+CXXFLAGS = -Wall -Wdeprecated -pedantic -DMEMTRACE -g -std=c++11
 
 HEADERS := $(wildcard *.h) $(wildcard *.hpp)
 SOURCES := $(wildcard *.cpp)

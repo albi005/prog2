@@ -1,42 +1,28 @@
-/**
- * \file pool.cpp
- *
- * StringPool osztály implemntációja
- * Valósítsd meg az osztály metódusait, a leírást a header fájlban találod.
- *
- * Ezt a fájlt be kell adni (fel kell tölteni) a megoldással.
- */
-
 #include "pool.h"
 #include "memtrace.h"
 #include <cstring>
 
-void StringPool::insert(RString* rString) {
-    size_t cap = rString->capacity();
-    for (auto it = _pool.begin(); it != _pool.end(); ++it) {
-        if (cap <= (*it)->capacity()) {
-            _pool.insert(it, rString);
-            return;
-        }
-    }
-    _pool.push_back(rString);
-}
-
 StringPool::StringPool(size_t obj_num, size_t init_cap) {
     for (size_t i = 0; i < obj_num; i++)
-        insert(new RString(init_cap));
+        pool.emplace_back(init_cap);
 }
 
 RString& StringPool::acquire(size_t capacity) {
-    inUseCount++;
-    for (auto it = _pool.begin(); it != _pool.end(); ++it) {
-        if (capacity <= (*it)->capacity()) {
-            auto res = *it;
-            _pool.erase(it);
-            return *res;
+    for (auto& entry : pool) {
+        if (entry.isAcquireable() && entry.canAccommodate(capacity)) {
+            return entry.acquire();
         }
     }
-    return *new RString(capacity);
+
+    // add a new RString in the correct position
+    for (auto it = pool.begin(); it != pool.end(); ++it) {
+        Entry& entry = *it;
+        if (entry.canAccommodate(capacity)) {
+            return pool.emplace(it, capacity)->acquire();
+        }
+    }
+    pool.emplace_back(capacity);
+    return pool.back().acquire();
 }
 
 RString& StringPool::acquire(const char* str) {
@@ -47,19 +33,18 @@ RString& StringPool::acquire(const char* str) {
 }
 
 bool StringPool::acquireable(const RString& str) const {
-    for (auto it : _pool) {
-        if (it == &str)
-            return true;
-    }
-    return false;
+    return std::any_of(pool.begin(), pool.end(), [&str](const Entry& entry) {
+        return entry.contains(str) && entry.isAcquireable();
+    });
 }
 
 void StringPool::release(RString& str) {
-    if (acquireable(str))
-        return;
-    inUseCount--;
-    str = "";
-    insert(&str);
+    for (auto& entry : pool) {
+        if (entry.contains(str)) {
+            entry.release();
+            return;
+        }
+    }
 }
 
 RString& StringPool::append(RString& str1, const RString& str2) {
@@ -78,6 +63,32 @@ RString& StringPool::append(RString& str1, const RString& str2) {
     return res;
 }
 
-size_t StringPool::size() const { return free_size() + inUseCount; }
+size_t StringPool::size() const { return pool.size(); }
 
-size_t StringPool::free_size() const { return _pool.size(); }
+size_t StringPool::free_size() const {
+    return std::count_if(pool.begin(), pool.end(), [](const Entry& entry) {
+        return entry.isAcquireable();
+    });
+}
+
+StringPool::Entry::Entry(size_t capacity) : rString(capacity) {}
+
+RString& StringPool::Entry::acquire() {
+    isInUse = true;
+    return rString;
+}
+
+void StringPool::Entry::release() {
+    isInUse = false;
+    rString = "";
+}
+
+bool StringPool::Entry::isAcquireable() const { return !isInUse; }
+
+bool StringPool::Entry::canAccommodate(size_t capacity) const {
+    return rString.capacity() >= capacity;
+}
+
+bool StringPool::Entry::contains(const RString& target) const {
+    return &this->rString == &target; // compare pointers
+}

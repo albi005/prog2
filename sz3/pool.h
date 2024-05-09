@@ -1,13 +1,3 @@
-/**
- * \file rstring.h
- *
- * StringPool osztály
- * Valósítsd meg az osztályhoz tartozó leírás alapján a szükséges funkciókat!
- * A függvények implementációját a forrásfájlban insert meg!
- *
- * Ezt a fájlt be kell adni (fel kell tölteni) a megoldással.
- */
-
 #ifndef POOL_H
 #define POOL_H
 
@@ -16,10 +6,23 @@
 #include <set>
 
 class StringPool {
-    std::list<RString*> _pool;
-    size_t inUseCount = 0;
+    class Entry {
+        bool isInUse = false;
+        RString rString;
 
-    void insert(RString* rString);
+        Entry(const Entry&); // disable copying
+        void operator=(const Entry&);
+
+      public:
+        explicit Entry(size_t capacity);
+        RString& acquire();
+        void release();
+        bool isAcquireable() const;
+        bool canAccommodate(size_t capacity) const;
+        bool contains(const RString& target) const;
+    };
+
+    std::list<Entry> pool;
 
   public:
     // Létrehoz obj_num db RString obejktumot,

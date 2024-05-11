@@ -10,7 +10,7 @@ class TreatmentsRange : public ListRange {
     std::function<void()> deleteTreatment;
     StringEditor* treatmentNameEditor = nullptr;
 
-    bool getIsInteractive() const override { return true; }
+    bool isInteractive() const override { return true; }
 
     void draw(
         ICanvas& canvas,

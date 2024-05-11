@@ -15,6 +15,8 @@ void Tabs::draw(ICanvas& canvas) {
     const Color backdrop = SURFACE_CONTAINER_LOWEST;
     const Color surface = SURFACE_CONTAINER;
 
+    canvas.fill({0, 0, canvas.getSize().w, 1}, backdrop);
+
     canvas.setPosition({0, 0});
     for (size_t i = 0; i < tabs.size(); ++i) {
         bool isSelected = selectedIndex == i;

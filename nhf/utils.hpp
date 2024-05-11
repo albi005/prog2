@@ -17,4 +17,8 @@ class StringEditor {
     ~StringEditor();
 };
 
+namespace utils {
+    void clampIndex(size_t& index, size_t count);
+} // namespace utils
+
 #endif

@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -fsanitize=address")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0")
 
-add_executable(vetman2
+set(COMMON_FILES
         AnimalPage.cpp
         AnimalPage.hpp
         AnimalsPage.cpp
@@ -30,8 +30,16 @@ add_executable(vetman2
         econio.h
         entities.cpp
         entities.hpp
-        main.cpp
         utils.cpp
         utils.hpp
 )
 
+add_executable(vetman2
+        main.cpp
+        ${COMMON_FILES}
+)
+
+add_executable(test
+        test.cpp
+        ${COMMON_FILES}
+)

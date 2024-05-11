@@ -31,7 +31,7 @@ void PageStack::push(StackablePage* page) { pages.push_back(page); }
 
 void PageStack::pop(const StackablePage& page) {
     if (pages.back() != &page)
-        throw std::logic_error("Can't popSelf page that is not the top of the stack"
+        throw std::logic_error("Can't pop page that is not the top of the stack"
         );
     pages.pop_back();
 }

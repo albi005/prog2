@@ -15,6 +15,7 @@ class OstreamCanvas final : public ICanvas {
     std::ostream& draw(Point pos, Color fg, Color bg) override;
     std::ostream& draw(Color fg, Color bg) override;
     operator std::ostream&() override;
+    void fill(Rect area, Color bg) override;
 
   private:
     void setForegroundColor(Color color);

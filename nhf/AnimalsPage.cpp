@@ -2,7 +2,7 @@
 #include "AnimalPage.hpp"
 #include "ListView.hpp"
 
-bool AnimalsRange::getIsInteractive() const { return true; }
+bool AnimalsRange::isInteractive() const { return true; }
 
 void AnimalsRange::draw(
     ICanvas& canvas, size_t firstIndex, size_t lastIndex, size_t selectedIndex
@@ -10,7 +10,7 @@ void AnimalsRange::draw(
 
 bool AnimalsRange::handleInput(char input, size_t selectedIndex) const {
     /*todo*/
-    throw;
+    return false;
 }
 
 AnimalsRange::AnimalsRange(

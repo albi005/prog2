@@ -1,7 +1,7 @@
 #include "OwnersPage.hpp"
 #include "OwnerPage.hpp"
 
-bool OwnersRange::getIsInteractive() const { return true; }
+bool OwnersRange::isInteractive() const { return true; }
 
 void OwnersRange::draw(
     ICanvas& canvas, size_t firstIndex, size_t lastIndex, size_t selectedIndex
@@ -9,7 +9,7 @@ void OwnersRange::draw(
 
 bool OwnersRange::handleInput(char input, size_t selectedIndex) const {
     /*todo*/
-    throw;
+    return false;
 }
 
 OwnersRange::OwnersRange(

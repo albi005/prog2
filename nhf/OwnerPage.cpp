@@ -2,7 +2,7 @@
 #include "AnimalPage.hpp"
 #include "ListView.hpp"
 
-bool OwnerAnimalsRange::getIsInteractive() const { return true; }
+bool OwnerAnimalsRange::isInteractive() const { return true; }
 
 void OwnerAnimalsRange::draw(
     ICanvas& canvas, size_t firstIndex, size_t lastIndex, size_t selectedIndex

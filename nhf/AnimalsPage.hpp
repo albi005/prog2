@@ -10,7 +10,7 @@ class AnimalsRange : public ListRange {
     std::string& searchTerm;
     std::function<void(Animal&)> openAnimal;
 
-    bool getIsInteractive() const override;
+    bool isInteractive() const override;
     void draw(
         ICanvas& canvas,
         size_t firstIndex,

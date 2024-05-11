@@ -1,7 +1,6 @@
 #include "OstreamCanvas.hpp"
 
-// Fe Escape sequences
-// https://en.wikipedia.org/wiki/ANSI_escape_code#Fe_Escape_sequences
+// Escape character
 #define ESC "\x1b"
 
 // Control Sequence Introducer
@@ -38,6 +37,16 @@ std::ostream& OstreamCanvas::draw(Color fg, Color bg) {
 
 OstreamCanvas::operator std::ostream&() { return os; }
 
+void OstreamCanvas::fill(Rect area, Color bg) {
+    setBackgroundColor(bg);
+    for (int y = area.y; y < area.y + area.h; y++) {
+        setCursorPosition({area.x, y});
+        for (int x = area.x; x < area.x + area.w; x++) {
+            os << ' ';
+        }
+    }
+}
+
 // prints CSI38;2;r;g;bm
 void OstreamCanvas::setForegroundColor(Color color) {
     if (currFgColor == color)
@@ -45,7 +54,7 @@ void OstreamCanvas::setForegroundColor(Color color) {
     currFgColor = color;
     os << CSI "38;2;";
     os << color;
-    os << "m";
+    os << 'm';
 }
 
 // prints CSI48;2;r;g;bm
@@ -55,12 +64,13 @@ void OstreamCanvas::setBackgroundColor(Color color) {
     currBgColor = color;
     os << CSI "48;2;";
     os << color;
-    os << "m";
+    os << 'm';
 }
 
 // prints CSIy;xH
 void OstreamCanvas::setCursorPosition(Point position) {
-    os << CSI << position.y << ";" << position.x << "H";
+    // increment coordinates because of 1 based indexing
+    os << CSI << position.y + 1 << ';' << position.x + 1 << 'H';
 }
 
 Expect::Expect(const char* s) : s(s) {}

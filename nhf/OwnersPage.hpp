@@ -8,7 +8,7 @@ class OwnersRange : public ListRange {
     std::string& searchTerm;
     std::function<void(Owner&)> openOwner;
 
-    bool getIsInteractive() const override;
+    bool isInteractive() const override;
     void draw(
         ICanvas& canvas,
         size_t firstIndex,

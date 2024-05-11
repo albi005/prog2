@@ -1,7 +1,7 @@
 #include "VaccinationsPage.hpp"
 #include "OwnerPage.hpp"
 
-bool VaccinationsRange::getIsInteractive() const { return true; }
+bool VaccinationsRange::isInteractive() const { return true; }
 
 void VaccinationsRange::draw(
     ICanvas& canvas, size_t firstIndex, size_t lastIndex, size_t selectedIndex
@@ -13,12 +13,16 @@ VaccinationsRange::VaccinationsRange(
     : data(data), openOwner(openOwner) {}
 
 VaccinationsPage::VaccinationsPage(Data& data, PageStack& pageStack)
-    : ContentView(
+    : ContentView(new PaddingView(
           new ListView(new std::vector<ListRange*>{new VaccinationsRange(
               data,
               [&pageStack, &data](Owner& owner) {
                   pageStack.push(new OwnerPage(owner, data, pageStack));
               }
-          )})
-      ),
+          )}),
+          0,
+          1,
+          0,
+          0
+      )),
       data(data), pageStack(pageStack) {}

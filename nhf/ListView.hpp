@@ -31,7 +31,7 @@ class ListRange {
 
     /// @returns Whether this ListRange can be selected and interacted with
     /// @remarks If false, handleInput is never called
-    virtual bool getIsInteractive() const;
+    virtual bool isInteractive() const;
 
     virtual bool handleInput(char input, size_t selectedIndex) const;
 
@@ -70,7 +70,7 @@ class EditablePropertyRange : public PropertyRange {
         size_t selectedIndex
     ) const override;
 
-    virtual bool getIsInteractive() const override;
+    virtual bool isInteractive() const override;
     virtual bool handleInput(char input, size_t selectedIndex) const override;
 
   public:
@@ -83,7 +83,7 @@ class EditablePropertyRange : public PropertyRange {
 class LinkPropertyRange : public PropertyRange {
     std::function<void()> open;
 
-    virtual bool getIsInteractive() const override;
+    virtual bool isInteractive() const override;
 
     virtual void draw(
         ICanvas& canvas,
@@ -131,7 +131,7 @@ class AddButtonRange : public ListRange {
         size_t selectedIndex
     ) const override;
 
-    virtual bool getIsInteractive() const override;
+    virtual bool isInteractive() const override;
     virtual bool handleInput(char input, size_t selectedIndex) const override;
 
   public:
@@ -144,11 +144,48 @@ class AddButtonRange : public ListRange {
 /// When handling input, it calls handleInput on the selected ListRange, passing
 /// in the index of the selected item inside the ListRange.
 class ListView : public View {
-    size_t selectedItemIndex;
+    size_t selectedItemIndex = 0;
     std::vector<ListRange*>* ranges;
+
+    /// @brief sum of the heights of the ranges
+    size_t listHeight;
+
+    /// @brief number of lines scrolled off-screen from the top
+    size_t scroll = 0;
+
+    /// @brief number of selectable lines
+    /// @details set in draw() and used in handleInput()
+    size_t interactiveCount;
+
+    /// @brief pointer to the range that contains the currently selected line
+    /// @details set in draw() and used in handleInput()
+    ListRange* selectedRange = nullptr;
+
+    /// @brief index of the selected line inside selectedRange
+    /// @details set in draw() and used in handleInput()
+    size_t selectedIndexInRange;
+
+    /// @brief index of the line that is selected
+    /// including non-interactive lines
+    size_t selectedLineIndex;
 
   public:
     ListView(std::vector<ListRange*>* ranges);
     virtual void draw(ICanvas& canvas) override;
     virtual bool handleInput(char input) override;
+
+  private:
+    /// @brief Sets interactiveCount, selectedRange and selectedIndexInRange and
+    void updateSelectionAndMeasure();
+
+  public:
+    struct ScrollBounds {
+        size_t min, max;
+    };
+
+  public:
+    // pure function to make it easier to reason about
+    __attribute__((const)) static ScrollBounds calculateScrollBounds(
+        size_t selectedLineIndex, size_t listHeight, size_t availableHeight
+    );
 };

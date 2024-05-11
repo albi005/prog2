@@ -52,5 +52,11 @@ PaddedCanvas::operator std::ostream&() {
     return inner.operator std::ostream&();
 }
 
+void PaddedCanvas::fill(Rect area, Color bg) {
+    area.x += l;
+    area.y += t;
+    inner.fill(area, bg);
+}
+
 PaddedCanvas::PaddedCanvas(int l, int t, int r, int b, ICanvas& inner)
     : l(l), t(t), r(r), b(b), inner(inner) {}

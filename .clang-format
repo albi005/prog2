@@ -14,5 +14,7 @@ DerivePointerAlignment: false
 PointerAlignment: Left
 SeparateDefinitionBlocks: Always
 IndentCaseLabels: true
+NamespaceIndentation: All
+BreakBeforeTernaryOperators: true
 
 ...

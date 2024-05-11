@@ -31,7 +31,11 @@ class RString {
     RString(const char* str, size_t capacity);
     // Megadja a string méretét (strlen)
     size_t size() const;
-    // Megadja a karaktertömb kapacitását (terminating null-al egutt)
+
+    // Megadja a karaktertömb kapacitását 
+    //
+    // Tesztesetek szerint, terminating nullal együtt:
+    // https://git.ik.bme.hu/Prog2/szorgalmi_feladatok/stringpool/blob/master/test.cpp#L37
     size_t capacity() const;
     // Visszaadja a string memóriaterületére mutató pointert
     operator char*() const;

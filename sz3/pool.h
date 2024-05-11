@@ -19,9 +19,12 @@ class StringPool {
         void release();
         bool isAcquireable() const;
         bool canAccommodate(size_t capacity) const;
+
+        // returns true if &this->rString == &target
         bool contains(const RString& target) const;
     };
 
+    // ordered by RString capacity
     std::list<Entry> pool;
 
   public:

@@ -8,13 +8,15 @@ StringPool::StringPool(size_t obj_num, size_t init_cap) {
 }
 
 RString& StringPool::acquire(size_t capacity) {
+    // Return the first free RString that can accomodate the given capacity.
+    // pool is ordered so the first one always has the smallest capacity
     for (auto& entry : pool) {
         if (entry.isAcquireable() && entry.canAccommodate(capacity)) {
             return entry.acquire();
         }
     }
 
-    // add a new RString in the correct position
+    // add a new RString in the correct position so that pool stays ordered
     for (auto it = pool.begin(); it != pool.end(); ++it) {
         Entry& entry = *it;
         if (entry.canAccommodate(capacity)) {

@@ -33,25 +33,25 @@ class ListRange {
     /// @remarks If false, handleInput is never called
     virtual bool isInteractive() const;
 
-    virtual bool handleInput(char input, size_t selectedIndex) const;
+    virtual bool handleInput(char input, size_t selectedIndex);
 
     virtual ~ListRange();
 };
 
 // ListRange that draws a title and a value. Takes up a single line
 class PropertyRange : public ListRange {
+  protected:
     const char* title;
     std::string& value;
 
+  public:
+    PropertyRange(const char* title, std::string& value);
     virtual void draw(
         ICanvas& canvas,
         size_t firstIndex,
         size_t lastIndex,
         size_t selectedIndex
     ) const override;
-
-  public:
-    PropertyRange(const char* title, std::string& value);
     virtual ~PropertyRange();
 };
 
@@ -71,7 +71,7 @@ class EditablePropertyRange : public PropertyRange {
     ) const override;
 
     virtual bool isInteractive() const override;
-    virtual bool handleInput(char input, size_t selectedIndex) const override;
+    virtual bool handleInput(char input, size_t selectedIndex) override;
 
   public:
     EditablePropertyRange(const char* title, std::string& value);
@@ -92,7 +92,7 @@ class LinkPropertyRange : public PropertyRange {
         size_t selectedIndex
     ) const override;
 
-    bool handleInput(char input, size_t selectedIndex) const override;
+    bool handleInput(char input, size_t selectedIndex) override;
 
   public:
     LinkPropertyRange(
@@ -132,7 +132,7 @@ class AddButtonRange : public ListRange {
     ) const override;
 
     virtual bool isInteractive() const override;
-    virtual bool handleInput(char input, size_t selectedIndex) const override;
+    virtual bool handleInput(char input, size_t selectedIndex) override;
 
   public:
     AddButtonRange(std::function<void()> createEntity);

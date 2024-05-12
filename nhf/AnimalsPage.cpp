@@ -8,7 +8,7 @@ void AnimalsRange::draw(
     ICanvas& canvas, size_t firstIndex, size_t lastIndex, size_t selectedIndex
 ) const { /*todo*/ }
 
-bool AnimalsRange::handleInput(char input, size_t selectedIndex) const {
+bool AnimalsRange::handleInput(char input, size_t selectedIndex) {
     /*todo*/
     return false;
 }

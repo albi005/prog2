@@ -18,7 +18,7 @@ class TreatmentsRange : public ListRange {
         size_t lastIndex,
         size_t selectedIndex
     ) const override;
-    virtual bool handleInput(char input, size_t selectedIndex) const override;
+    virtual bool handleInput(char input, size_t selectedIndex) override;
 
   public:
     TreatmentsRange(Animal& animal, std::function<void()> deleteTreatment);

@@ -7,8 +7,8 @@ int ListRange::getHeight() const { return 1; }
 
 bool ListRange::isInteractive() const { return false; }
 
-bool ListRange::handleInput(char input, size_t selectedIndex) const {
-    /*TODO*/
+bool ListRange::handleInput(char input, size_t selectedIndex) {
+    /* TODO: throw an exception */
     return false;
 }
 
@@ -19,7 +19,14 @@ PropertyRange::PropertyRange(const char* title, std::string& value)
 
 void PropertyRange::draw(
     ICanvas& canvas, size_t firstIndex, size_t lastIndex, size_t selectedIndex
-) const { /*TODO*/ }
+) const {
+    canvas.draw(
+        {0, 0},
+        ON_SURFACE_VARIANT,
+        SURFACE /*TODO: elevation based surface color*/
+    ) << title
+      << ": " << value;
+}
 
 PropertyRange::~PropertyRange() {}
 
@@ -27,11 +34,41 @@ bool EditablePropertyRange::isInteractive() const { return true; }
 
 void EditablePropertyRange::draw(
     ICanvas& canvas, size_t firstIndex, size_t lastIndex, size_t selectedIndex
-) const { /*TODO*/ }
+) const {
+    bool isSelected = selectedIndex == 0;
+    bool isEditing = editor != nullptr;
 
-bool EditablePropertyRange::handleInput(char input, size_t selectedIndex)
-    const {
-    /*TODO*/
+    Color surface = SURFACE; // TODO: elevation based surface color
+
+    canvas.draw({0, 0}, ON_SURFACE_VARIANT, surface) << title << ": ";
+
+    if (isSelected) {
+        if (isEditing)
+            canvas.draw(ON_PRIMARY, PRIMARY);
+        else
+            canvas.draw(surface, ON_SURFACE);
+    } else {
+        canvas.draw(ON_SURFACE, surface);
+    }
+    canvas.draw() << (value.empty() ? " " : value);
+}
+
+bool EditablePropertyRange::handleInput(char input, size_t selectedIndex) {
+    // if editing
+    if (editor != nullptr) {
+        bool finished = editor->handleInput(input);
+        if (finished) {
+            delete editor;
+            editor = nullptr;
+        }
+        return true;
+    }
+
+    if (input == KEY_ENTER) {
+        editor = new StringEditor(value);
+        return true;
+    }
+
     return false;
 }
 
@@ -40,17 +77,29 @@ EditablePropertyRange::EditablePropertyRange(
 )
     : PropertyRange(title, value) {}
 
-EditablePropertyRange::~EditablePropertyRange() { /*TODO*/ }
+EditablePropertyRange::~EditablePropertyRange() = default;
 
 bool LinkPropertyRange::isInteractive() const { return true; }
 
 void LinkPropertyRange::draw(
     ICanvas& canvas, size_t firstIndex, size_t lastIndex, size_t selectedIndex
-) const { /*TODO*/ }
+) const {
+    canvas.draw({0, 0}, ON_SURFACE_VARIANT, SURFACE) << title << ": ";
 
-bool LinkPropertyRange::handleInput(char input, size_t selectedIndex) const {
-    /*TODO*/
-    throw;
+    bool isSelected = selectedIndex == 0;
+    if (isSelected) {
+        canvas.draw(ON_PRIMARY, PRIMARY) << value;
+    } else {
+        canvas.draw(ON_SURFACE_VARIANT, SURFACE) << value;
+    }
+}
+
+bool LinkPropertyRange::handleInput(char input, size_t selectedIndex) {
+    if (input == KEY_ENTER) {
+        open();
+        return true;
+    }
+    return false;
 }
 
 LinkPropertyRange::LinkPropertyRange(
@@ -73,12 +122,18 @@ bool AddButtonRange::isInteractive() const { return true; }
 void AddButtonRange::draw(
     ICanvas& canvas, size_t firstIndex, size_t lastIndex, size_t selectedIndex
 ) const {
-    canvas.draw({0, 0}, ON_PRIMARY, PRIMARY) << " Hozzáadás ";
+    bool selected = selectedIndex == 0;
+    Color fg = selected ? ON_PRIMARY : PRIMARY;
+    Color bg = selected ? PRIMARY : ON_PRIMARY;
+    canvas.draw({2, 0}, fg, bg) << " + Hozzáadás ";
 }
 
-bool AddButtonRange::handleInput(char input, size_t selectedIndex) const {
-    /*TODO*/
-    throw;
+bool AddButtonRange::handleInput(char input, size_t selectedIndex) {
+    if (input == KEY_ENTER) {
+        createEntity();
+        return true;
+    }
+    return false;
 }
 
 AddButtonRange::AddButtonRange(std::function<void()> createEntity)
@@ -114,7 +169,8 @@ void ListView::updateSelectionAndMeasure() {
             continue;
 
         // Store the last interactive line until we reach the selected one.
-        // If the last item is deleted this gives us the last interactive line
+        // If the last item is deleted this gives us the last interactive
+        // line
         selectedRange = range;
         selectedIndexInRange = height - 1;
 
@@ -159,7 +215,13 @@ void ListView::draw(ICanvas& canvas) {
         // tells the range which index to start drawing from
         size_t firstIndex = std::max(firstVisibleLine, firstLine) - firstLine;
         size_t lastIndex = std::min(lastVisibleLine, lastLine) - firstLine;
-        range->draw(paddedCanvas, firstIndex, lastIndex, selectedIndexInRange);
+
+        // index of the selected line *inside* the range.
+        // tells the range which line is selected
+        size_t selectedIndex =
+            selectedRange == range ? selectedIndexInRange : range->getHeight();
+
+        range->draw(paddedCanvas, firstIndex, lastIndex, selectedIndex);
     }
 }
 
@@ -187,15 +249,12 @@ ListView::ScrollBounds ListView::calculateScrollBounds(
     size_t selectedLineIndex, size_t listHeight, size_t availableHeight
 ) {
     // https://neovim.io/doc/user/options.html#'scrolloff'
-    // number of lines to keep above and below the cursor visible when possible.
-    // disallow scrolling if the list fits on the screen
+    // number of lines to keep above and below the cursor visible when
+    // possible. disallow scrolling if the list fits on the screen
     const size_t scrollOff = 8;
 
-    size_t min = selectedLineIndex;
-    size_t max = selectedLineIndex;
-    if (listHeight > availableHeight) {
-        min = std::max(min, selectedLineIndex + scrollOff);
-        max = std::min(max, selectedLineIndex + availableHeight - scrollOff);
-    }
-    return {min, max};
+    std::ignore = selectedLineIndex + listHeight + scrollOff + availableHeight;
+
+    /*TODO: scroll bounds*/
+    return {0, 0};
 }

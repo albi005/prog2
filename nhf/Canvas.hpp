@@ -10,6 +10,8 @@ struct Color {
 
   public:
     /*implicit*/ Color(uint32_t argb); // NOLINT(*-explicit-constructor)
+    Color(const Color& other);
+
     uint32_t r() const;
     uint32_t g() const;
     uint32_t b() const;
@@ -57,7 +59,10 @@ class ICanvas {
     /// @details Does not move the cursor.
     virtual std::ostream& draw(Color fg, Color bg) = 0;
 
-    virtual operator std::ostream&() = 0;
+    /// @returns the stream to draw on.
+    /// @details Does not move the cursor.
+    virtual std::ostream& draw() = 0;
+
     virtual void fill(Rect area, Color bg) = 0;
 };
 
@@ -69,7 +74,7 @@ class PaddedCanvas final : public ICanvas {
     std::ostream& setPosition(Point pos) override;
     std::ostream& draw(Point pos, Color fg, Color bg) override;
     std::ostream& draw(Color fg, Color bg) override;
-    operator std::ostream&() override;
+    std::ostream& draw() override;
     void fill(Rect area, Color bg) override;
 
   public:

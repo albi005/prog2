@@ -16,7 +16,7 @@ class OwnerAnimalsRange : public ListRange {
         size_t lastIndex,
         size_t selectedIndex
     ) const override;
-    virtual bool handleInput(char input, size_t selectedIndex) const override;
+    virtual bool handleInput(char input, size_t selectedIndex) override;
 
   public:
     OwnerAnimalsRange(Owner& owner, std::function<void(Animal&)> openAnimal);

@@ -17,7 +17,7 @@ class AnimalsRange : public ListRange {
         size_t lastIndex,
         size_t selectedIndex
     ) const override;
-    bool handleInput(char input, size_t selectedIndex) const override;
+    bool handleInput(char input, size_t selectedIndex) override;
 
   public:
     AnimalsRange(

@@ -7,7 +7,7 @@ void OwnersRange::draw(
     ICanvas& canvas, size_t firstIndex, size_t lastIndex, size_t selectedIndex
 ) const { /*todo*/ }
 
-bool OwnersRange::handleInput(char input, size_t selectedIndex) const {
+bool OwnersRange::handleInput(char input, size_t selectedIndex) {
     /*todo*/
     return false;
 }

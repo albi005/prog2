@@ -11,7 +11,7 @@ void TreatmentsRange::draw(
     /* TODO */
 }
 
-bool TreatmentsRange::handleInput(char input, size_t selectedIndex) const {
+bool TreatmentsRange::handleInput(char input, size_t selectedIndex) {
     /* TODO */
     throw;
 }

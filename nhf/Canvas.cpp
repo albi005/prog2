@@ -2,6 +2,8 @@
 
 Color::Color(uint32_t argb) : argb(argb) {}
 
+Color::Color(const Color& other) : argb(other.argb) {}
+
 uint32_t Color::r() const { return (argb >> 16) & 0xff; }
 
 uint32_t Color::g() const { return (argb >> 8) & 0xff; }
@@ -48,9 +50,7 @@ std::ostream& PaddedCanvas::draw(Color fg, Color bg) {
     return inner.draw(fg, bg);
 }
 
-PaddedCanvas::operator std::ostream&() {
-    return inner.operator std::ostream&();
-}
+std::ostream& PaddedCanvas::draw() { return inner.draw(); }
 
 void PaddedCanvas::fill(Rect area, Color bg) {
     area.x += l;

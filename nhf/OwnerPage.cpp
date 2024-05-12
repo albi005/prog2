@@ -8,7 +8,7 @@ void OwnerAnimalsRange::draw(
     ICanvas& canvas, size_t firstIndex, size_t lastIndex, size_t selectedIndex
 ) const { /*todo*/ }
 
-bool OwnerAnimalsRange::handleInput(char input, size_t selectedIndex) const {
+bool OwnerAnimalsRange::handleInput(char input, size_t selectedIndex) {
     /*todo*/
     throw;
 }

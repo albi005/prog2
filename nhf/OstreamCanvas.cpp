@@ -26,7 +26,7 @@ std::ostream& OstreamCanvas::setPosition(Point pos) {
 
 std::ostream& OstreamCanvas::draw(Point pos, Color fg, Color bg) {
     setCursorPosition(pos);
-    return os;
+    return draw(fg, bg);
 }
 
 std::ostream& OstreamCanvas::draw(Color fg, Color bg) {
@@ -35,7 +35,7 @@ std::ostream& OstreamCanvas::draw(Color fg, Color bg) {
     return os;
 }
 
-OstreamCanvas::operator std::ostream&() { return os; }
+std::ostream& OstreamCanvas::draw() { return os; }
 
 void OstreamCanvas::fill(Rect area, Color bg) {
     setBackgroundColor(bg);

@@ -1,4 +1,5 @@
 #include "Canvas.hpp"
+#include "utils.hpp"
 
 Color::Color(uint32_t argb) : argb(argb) {}
 
@@ -56,6 +57,8 @@ std::ostream& PaddedCanvas::draw(Color fg, Color bg) {
     return inner.draw(fg, bg);
 }
 
+std::ostream& PaddedCanvas::draw(Color fg) { return inner.draw(fg); }
+
 std::ostream& PaddedCanvas::draw() { return inner.draw(); }
 
 void PaddedCanvas::fill(Rect area, Color bg) {
@@ -66,3 +69,20 @@ void PaddedCanvas::fill(Rect area, Color bg) {
 
 PaddedCanvas::PaddedCanvas(int l, int t, int r, int b, ICanvas& inner)
     : l(l), t(t), r(r), b(b), inner(inner) {}
+
+Clip::Clip(const std::string& s, size_t maxLen) : s(s), maxLen(maxLen) {}
+
+void Clip::write(std::ostream& os) {
+    size_t actualWritten = 0;
+    for (size_t i = 0; i < s.size() && actualWritten < maxLen;) {
+        os << s[i++];
+        actualWritten++;
+        while (utils::isContinuationByte(s[i]))
+            os << s[i++];
+    }
+}
+
+std::ostream& operator<<(std::ostream& os, Clip clip) {
+    clip.write(os);
+    return os;
+}

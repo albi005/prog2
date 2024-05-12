@@ -23,9 +23,12 @@ template <typename TEntity> class Repository {
     void load(std::istream& is) {
         if (entities.size() > 0)
             throw std::runtime_error("load called on non-empty repository");
-        while (is.good()) {
+        while (true) {
             TEntity* entity = new TEntity();
-            entity->deserialize(is);
+            if (!entity->deserialize(is)) {
+                delete entity;
+                break;
+            }
             entities[entity->id] = entity;
         }
     }
@@ -36,7 +39,11 @@ template <typename TEntity> class Repository {
             kv.second->serialize(os);
     }
 
-    TEntity* tryGetById(size_t id) const { /*TODO*/ throw; }
+    bool empty() const { return entities.empty(); }
+
+    size_t size() const { return entities.size(); }
+
+    TEntity& at(size_t id) const { return *entities.at(id); }
 
     auto begin() const { return entities.begin(); }
 

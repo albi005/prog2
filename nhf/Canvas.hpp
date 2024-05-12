@@ -62,6 +62,11 @@ class ICanvas {
     /// @details Does not move the cursor.
     virtual std::ostream& draw(Color fg, Color bg) = 0;
 
+    /// @brief Sets the foreground color.
+    /// @returns the stream to draw on.
+    /// @details Does not move the cursor.
+    virtual std::ostream& draw(Color fg) = 0;
+
     /// @returns the stream to draw on.
     /// @details Does not move the cursor.
     virtual std::ostream& draw() = 0;
@@ -79,12 +84,25 @@ class PaddedCanvas final : public ICanvas {
     void setSurfaceColor(Color color) override;
     std::ostream& draw(Point pos, Color fg, Color bg) override;
     std::ostream& draw(Color fg, Color bg) override;
+    std::ostream& draw(Color fg) override;
     std::ostream& draw() override;
     void fill(Rect area, Color bg) override;
 
   public:
     PaddedCanvas(int l, int t, int r, int b, ICanvas& inner);
 };
+
+/// @brief Clips a string to a maximum length.
+class Clip {
+    const std::string& s;
+    size_t maxLen;
+
+  public:
+    Clip(const std::string& s, size_t maxLen);
+    void write(std::ostream& os);
+};
+
+std::ostream& operator<<(std::ostream& os, Clip clip);
 
 // https://alb1.hu/#materialcolorutilities btw
 #define PRIMARY 0x9BD595

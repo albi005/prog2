@@ -17,11 +17,9 @@ void AnimalRepository::load(std::istream& is, const OwnerRepository& owners) {
     Repository<Animal>::load(is);
     for (auto [id, animal] : entities) {
         std::ignore = id;
-        auto owner = owners.tryGetById(animal->ownerId);
-        if (owner == nullptr)
-            throw std::runtime_error("Owner not found");
-        animal->owner = owner;
-        owner->animals.push_back(animal);
+        auto& owner = owners.at(animal->ownerId);
+        animal->owner = &owner;
+        owner.animals.push_back(animal);
     }
 }
 
@@ -41,11 +39,9 @@ void TreatmentRepository::load(
     Repository<Treatment>::load(is);
     for (auto [id, treatment] : entities) {
         std::ignore = id;
-        auto animal = animals.tryGetById(treatment->animalId);
-        if (animal == nullptr)
-            throw std::runtime_error("Animal not found");
-        treatment->animal = animal;
-        animal->treatments.push_back(treatment);
+        auto& animal = animals.at(treatment->animalId);
+        treatment->animal = &animal;
+        animal.treatments.push_back(treatment);
     }
 }
 
@@ -84,9 +80,9 @@ Data::Data(
     const char* ownersFile, const char* animalsFile, const char* treatmentsFile
 )
     : Data() {
-    std::ifstream ownersStream(ownersFile, std::ifstream::in);
-    std::ifstream animalsStream(animalsFile, std::ifstream::in);
-    std::ifstream treatmentsStream(treatmentsFile, std::ifstream::in);
+    std::ifstream ownersStream(ownersFile);
+    std::ifstream animalsStream(animalsFile);
+    std::ifstream treatmentsStream(treatmentsFile);
     load(ownersStream, animalsStream, treatmentsStream);
 }
 

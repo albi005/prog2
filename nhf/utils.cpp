@@ -37,3 +37,7 @@ void utils::clampIndex(size_t& index, size_t count) {
 bool utils::isContinuationByte(char c) {
     return (c & 0b11000000) == 0b10000000;
 }
+
+int utils::daysSince(time_t date, time_t now) {
+    return (now - date) / (60 * 60 * 24);
+}

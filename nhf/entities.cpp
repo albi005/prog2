@@ -7,11 +7,14 @@ void Owner::serialize(std::ostream& os) const {
     os << contact << '\n';
 }
 
-void Owner::deserialize(std::istream& is) {
-    is >> id;
+bool Owner::deserialize(std::istream& is) {
+    if (!(is >> id))
+        return false;
+    is.ignore(); // skip newline
     std::getline(is, name);
     std::getline(is, address);
     std::getline(is, contact);
+    return true;
 }
 
 void Animal::serialize(std::ostream& os) const {
@@ -21,10 +24,14 @@ void Animal::serialize(std::ostream& os) const {
     os << species << '\n';
 }
 
-void Animal::deserialize(std::istream& is) {
-    is >> id >> ownerId;
+bool Animal::deserialize(std::istream& is) {
+    if (!(is >> id))
+        return false;
+    is >> ownerId;
+    is.ignore(); // skip newline
     std::getline(is, name);
     std::getline(is, species);
+    return true;
 }
 
 void Treatment::serialize(std::ostream& os) const {
@@ -32,11 +39,15 @@ void Treatment::serialize(std::ostream& os) const {
     os << animalId << '\n';
     os << description << '\n';
     os << date << '\n';
-    os << was_rabies_vaccinated << '\n';
+    os << wasVaccinated << '\n';
 }
 
-void Treatment::deserialize(std::istream& is) {
-    is >> id >> animalId;
+bool Treatment::deserialize(std::istream& is) {
+    if (!(is >> id))
+        return false;
+    is >> animalId;
+    is.ignore(); // skip newline
     std::getline(is, description);
-    is >> date >> was_rabies_vaccinated;
+    is >> date >> wasVaccinated;
+    return true;
 }

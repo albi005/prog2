@@ -39,6 +39,11 @@ std::ostream& OstreamCanvas::draw(Color fg, Color bg) {
     return os;
 }
 
+std::ostream& OstreamCanvas::draw(Color fg) {
+    setForegroundColor(fg);
+    return os;
+}
+
 std::ostream& OstreamCanvas::draw() { return os; }
 
 void OstreamCanvas::fill(Rect area, Color bg) {

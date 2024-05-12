@@ -33,7 +33,7 @@ int main() {
         canvas.setPosition({999, 999});
         econio_flush();
 
-        int input = econio_getch();
+        char input = econio_getch();
         bool handled = app.handleInput(input);
         if (!handled && (input == KEY_ESCAPE || input == 'q'))
             break;

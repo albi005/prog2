@@ -24,6 +24,9 @@ namespace utils {
     /// @brief Whether c is a UTF-8 continuation byte
     /// @see https://en.wikipedia.org/wiki/UTF-8#Encoding
     bool isContinuationByte(char c);
+
+    // Returns number of days since date
+    int daysSince(time_t date, time_t now);
 } // namespace utils
 
 #endif

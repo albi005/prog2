@@ -17,6 +17,7 @@ class OstreamCanvas final : public ICanvas {
     void setSurfaceColor(Color color) override;
     std::ostream& draw(Point pos, Color fg, Color bg) override;
     std::ostream& draw(Color fg, Color bg) override;
+    std::ostream& draw(Color fg) override;
     std::ostream& draw() override;
     void fill(Rect area, Color bg) override;
 

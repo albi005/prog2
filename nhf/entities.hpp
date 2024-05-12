@@ -5,7 +5,10 @@
 
 struct Serializable {
     virtual void serialize(std::ostream& os) const = 0;
-    virtual void deserialize(std::istream& is) = 0;
+
+    /// @returns whether the deserialization was successful
+    virtual bool deserialize(std::istream& is) = 0;
+
     virtual ~Serializable() = default;
 };
 
@@ -28,7 +31,7 @@ struct Owner final : public Entity {
     std::vector<Animal*> animals;
 
     void serialize(std::ostream& os) const override;
-    void deserialize(std::istream& is) override;
+    bool deserialize(std::istream& is) override;
 
   public:
     ~Owner() override = default;
@@ -45,7 +48,7 @@ struct Animal final : public Entity {
     std::vector<Treatment*> treatments;
 
     void serialize(std::ostream& os) const override;
-    void deserialize(std::istream& is) override;
+    bool deserialize(std::istream& is) override;
 
   public:
     ~Animal() override = default;
@@ -54,13 +57,13 @@ struct Animal final : public Entity {
 struct Treatment final : public Entity {
     size_t animalId;
     time_t date;
-    bool was_rabies_vaccinated;
+    bool wasVaccinated;
     std::string description;
 
     Animal* animal;
 
     void serialize(std::ostream& os) const override;
-    void deserialize(std::istream& is) override;
+    bool deserialize(std::istream& is) override;
 
   public:
     ~Treatment() override = default;

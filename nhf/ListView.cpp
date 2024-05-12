@@ -223,6 +223,9 @@ void ListView::draw(ICanvas& canvas) {
 }
 
 bool ListView::handleInput(char input) {
+    if (this->interactiveCount == 0)
+        return false;
+
     if (selectedRange != nullptr)
         if (selectedRange->handleInput(input, selectedIndexInRange))
             return true;
@@ -252,6 +255,6 @@ ListView::ScrollBounds ListView::calculateScrollBounds(
 
     std::ignore = selectedLineIndex + listHeight + scrollOff + availableHeight;
 
-    /*TODO: scroll bounds*/
+    /*TODO: scroll bounds calculation*/
     return {0, 0};
 }

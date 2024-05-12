@@ -2,7 +2,7 @@
 #include "OwnerPage.hpp"
 #include "constants.h"
 
-bool VaccinationsRange::isInteractive() const { return true; }
+bool VaccinationsRange::isInteractive() const { return !orderedOwners.empty(); }
 
 VaccinationsRange::VaccinationsRange(
     Data& data, std::function<void(Owner&)> openOwner
@@ -83,7 +83,14 @@ void VaccinationsRange::draw(
     ICanvas& canvas, size_t firstIndex, size_t lastIndex, size_t selectedIndex
 ) const {
     const Color surface = canvas.getSurfaceColor();
-    size_t maxNameLength = 20;
+
+    if (orderedOwners.empty()) {
+        canvas.draw({2, 0}, ON_SURFACE_VARIANT, surface)
+            << "Még nincs tulajdonos felvéve";
+        return;
+    }
+
+    size_t maxNameLength = 20; // TODO: make dynamic
 
     for (size_t i = firstIndex; i <= lastIndex; i++) {
         auto [oldestVaccination, o] = orderedOwners[i];

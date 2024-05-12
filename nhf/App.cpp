@@ -12,8 +12,9 @@ Tabs::Tabs(std::vector<Tab>* tabs, PageStack& pageStack)
     : StackablePage(pageStack), tabs(*tabs) {}
 
 void Tabs::draw(ICanvas& canvas) {
+    canvas.setSurfaceColor(getSurfaceColor());
     const Color backdrop = SURFACE_CONTAINER_LOWEST;
-    const Color surface = SURFACE_CONTAINER;
+    const Color surface = canvas.getSurfaceColor();
 
     canvas.fill({0, 0, canvas.getSize().w, 1}, backdrop);
 
@@ -26,6 +27,8 @@ void Tabs::draw(ICanvas& canvas) {
         ) << " "
           << tabs[i].getTitle() << " ";
     }
+
+    canvas.fill({0, 1, canvas.getSize().w, canvas.getSize().h - 1}, surface);
 
     Tab& selectedTab = tabs[selectedIndex];
     PaddedCanvas paddedCanvas(0, 1, 0, 0, canvas);

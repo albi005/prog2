@@ -6,12 +6,15 @@ class OstreamCanvas final : public ICanvas {
     int width = 0, height = 0;
     Color currFgColor = 1, currBgColor = 1;
     std::ostream& os;
+    Color surfaceColor = 0x800080; // purple
 
   public:
     explicit OstreamCanvas(std::ostream& os);
     void updateScreenSize(std::istream& is);
     Size getSize() const override;
     std::ostream& setPosition(Point pos) override;
+    Color getSurfaceColor() const override;
+    void setSurfaceColor(Color color) override;
     std::ostream& draw(Point pos, Color fg, Color bg) override;
     std::ostream& draw(Color fg, Color bg) override;
     std::ostream& draw() override;

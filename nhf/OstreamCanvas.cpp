@@ -24,6 +24,10 @@ std::ostream& OstreamCanvas::setPosition(Point pos) {
     return os;
 }
 
+Color OstreamCanvas::getSurfaceColor() const { return surfaceColor; }
+
+void OstreamCanvas::setSurfaceColor(Color color) { surfaceColor = color; }
+
 std::ostream& OstreamCanvas::draw(Point pos, Color fg, Color bg) {
     setCursorPosition(pos);
     return draw(fg, bg);
@@ -41,9 +45,13 @@ void OstreamCanvas::fill(Rect area, Color bg) {
     setBackgroundColor(bg);
     for (int y = area.y; y < area.y + area.h; y++) {
         setCursorPosition({area.x, y});
-        for (int x = area.x; x < area.x + area.w; x++) {
-            os << ' ';
-        }
+
+        bool toEnd = area.x + area.w >= width;
+        if (toEnd)
+            os << CSI "K"; // clear to end of line
+        else
+            for (int x = area.x; x < area.x + area.w; x++)
+                os << ' ';
     }
 }
 

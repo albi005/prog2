@@ -20,12 +20,8 @@ PropertyRange::PropertyRange(const char* title, std::string& value)
 void PropertyRange::draw(
     ICanvas& canvas, size_t firstIndex, size_t lastIndex, size_t selectedIndex
 ) const {
-    canvas.draw(
-        {0, 0},
-        ON_SURFACE_VARIANT,
-        SURFACE /*TODO: elevation based surface color*/
-    ) << title
-      << ": " << value;
+    canvas.draw({0, 0}, ON_SURFACE_VARIANT, canvas.getSurfaceColor())
+        << title << ": " << value;
 }
 
 PropertyRange::~PropertyRange() {}
@@ -38,7 +34,7 @@ void EditablePropertyRange::draw(
     bool isSelected = selectedIndex == 0;
     bool isEditing = editor != nullptr;
 
-    Color surface = SURFACE; // TODO: elevation based surface color
+    Color surface = canvas.getSurfaceColor();
 
     canvas.draw({0, 0}, ON_SURFACE_VARIANT, surface) << title << ": ";
 
@@ -84,13 +80,14 @@ bool LinkPropertyRange::isInteractive() const { return true; }
 void LinkPropertyRange::draw(
     ICanvas& canvas, size_t firstIndex, size_t lastIndex, size_t selectedIndex
 ) const {
-    canvas.draw({0, 0}, ON_SURFACE_VARIANT, SURFACE) << title << ": ";
+    Color surface = canvas.getSurfaceColor();
+    canvas.draw({0, 0}, ON_SURFACE_VARIANT, surface) << title << ": ";
 
     bool isSelected = selectedIndex == 0;
     if (isSelected) {
         canvas.draw(ON_PRIMARY, PRIMARY) << value;
     } else {
-        canvas.draw(ON_SURFACE_VARIANT, SURFACE) << value;
+        canvas.draw(ON_SURFACE_VARIANT, surface) << value;
     }
 }
 

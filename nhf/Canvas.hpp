@@ -50,6 +50,9 @@ class ICanvas {
     virtual Size getSize() const = 0;
     virtual std::ostream& setPosition(Point pos) = 0;
 
+    virtual Color getSurfaceColor() const = 0;
+    virtual void setSurfaceColor(Color color) = 0;
+
     /// Moves the cursor to pos and sets the foreground and background color.
     /// @returns the stream to draw on.
     virtual std::ostream& draw(Point pos, Color fg, Color bg) = 0;
@@ -72,6 +75,8 @@ class PaddedCanvas final : public ICanvas {
 
     Size getSize() const override;
     std::ostream& setPosition(Point pos) override;
+    Color getSurfaceColor() const override;
+    void setSurfaceColor(Color color) override;
     std::ostream& draw(Point pos, Color fg, Color bg) override;
     std::ostream& draw(Color fg, Color bg) override;
     std::ostream& draw() override;

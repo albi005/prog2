@@ -56,12 +56,15 @@ class PageStack final : public View {
 /// Stores a reference to the PageStack
 class StackablePage : public virtual View {
     PageStack& pageStack;
+    uint8_t level;
 
   protected:
     void popSelf();
     void push(StackablePage* page); // takes ownership
+    Color getSurfaceColor() const;
 
   public:
     explicit StackablePage(PageStack& pageStack);
+    void setLevel(uint8_t value);
     virtual ~StackablePage() = default;
 };

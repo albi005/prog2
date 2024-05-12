@@ -27,7 +27,10 @@ void PaddingView::draw(ICanvas& canvas) {
     ContentView::draw(padded);
 }
 
-void PageStack::push(StackablePage* page) { pages.push_back(page); }
+void PageStack::push(StackablePage* page) {
+    pages.push_back(page);
+    page->setLevel(pages.size() - 1);
+}
 
 void PageStack::pop(const StackablePage& page) {
     if (pages.back() != &page)
@@ -67,3 +70,21 @@ StackablePage::StackablePage(PageStack& pageStack) : pageStack(pageStack) {}
 void StackablePage::popSelf() { pageStack.pop(*this); }
 
 void StackablePage::push(StackablePage* page) { pageStack.push(page); }
+
+void StackablePage::setLevel(uint8_t value) { this->level = value; }
+
+Color StackablePage::getSurfaceColor() const {
+    static const Color colors[] = {
+        SURFACE_CONTAINER_LOWEST,
+        SURFACE_CONTAINER_LOW,
+        SURFACE_CONTAINER,
+        SURFACE_CONTAINER_HIGH,
+        SURFACE_CONTAINER_HIGHEST
+    };
+
+    // Tabs uses SURFACE_CONTAINER_LOWEST as the backdrop
+    uint8_t actualLevel = level + 1;
+    if (actualLevel > 4)
+        return colors[4];
+    return colors[actualLevel];
+}

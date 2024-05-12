@@ -40,6 +40,12 @@ std::ostream& PaddedCanvas::setPosition(Point pos) {
     return inner.setPosition(pos);
 }
 
+Color PaddedCanvas::getSurfaceColor() const { return inner.getSurfaceColor(); }
+
+void PaddedCanvas::setSurfaceColor(Color color) {
+    inner.setSurfaceColor(color);
+}
+
 std::ostream& PaddedCanvas::draw(Point pos, Color fg, Color bg) {
     pos.x += l;
     pos.y += t;

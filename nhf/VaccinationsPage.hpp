@@ -15,7 +15,7 @@ class VaccinationsRange : public ListRange {
 
     bool isInteractive() const override;
     void onBeforeMeasure() override;
-    int getHeight() const override;
+    size_t getHeight() const override;
     void draw(
         ICanvas& canvas,
         size_t firstIndex,

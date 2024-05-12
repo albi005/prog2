@@ -10,7 +10,12 @@ class AnimalsRange : public ListRange {
     std::string& searchTerm;
     std::function<void(Animal&)> openAnimal;
 
+    // set in onBeforeMeasure
+    std::vector<std::pair<Animal*, size_t>> filteredAnimals;
+
+    void onBeforeMeasure() override;
     bool isInteractive() const override;
+    size_t getHeight() const override;
     void draw(
         ICanvas& canvas,
         size_t firstIndex,

@@ -104,6 +104,28 @@ class Clip {
 
 std::ostream& operator<<(std::ostream& os, Clip clip);
 
+class SearchedString {
+    const std::string& s;
+    const size_t start;
+    const size_t length;
+    const size_t maxLen;
+    const Color textColor;
+    const Color highlightColor;
+    const Color surfaceColor;
+
+  public:
+    SearchedString(
+        const std::string& s,
+        size_t start,
+        size_t length,
+        size_t maxLen,
+        Color textColor,
+        Color highlightColor,
+        Color surfaceColor
+    );
+    void draw(ICanvas& canvas) const;
+};
+
 // https://alb1.hu/#materialcolorutilities btw
 #define PRIMARY 0x9BD595
 #define ON_PRIMARY 0x00390A

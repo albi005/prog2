@@ -8,7 +8,12 @@ class OwnersRange : public ListRange {
     std::string& searchTerm;
     std::function<void(Owner&)> openOwner;
 
+    // set in onBeforeMeasure
+    std::vector<std::pair<Owner*, size_t>> filteredOwners;
+
+    void onBeforeMeasure() override;
     bool isInteractive() const override;
+    size_t getHeight() const override;
     void draw(
         ICanvas& canvas,
         size_t firstIndex,

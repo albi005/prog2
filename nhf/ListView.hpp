@@ -27,7 +27,7 @@ class ListRange {
     virtual void onBeforeMeasure();
 
     /// @returns The number of lines this ListRange takes up.
-    virtual int getHeight() const;
+    virtual size_t getHeight() const;
 
     /// @returns Whether this ListRange can be selected and interacted with
     /// @remarks If false, handleInput is never called
@@ -116,7 +116,7 @@ class PaddingRange final : public ListRange {
         size_t selectedIndex
     ) const override;
 
-    int getHeight() const override;
+    size_t getHeight() const override;
 };
 
 /// @brief ListRange that draws a + button. When selected and Enter is pressed,

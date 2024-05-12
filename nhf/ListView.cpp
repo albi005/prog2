@@ -3,7 +3,7 @@
 
 void ListRange::onBeforeMeasure() {}
 
-int ListRange::getHeight() const { return 1; }
+size_t ListRange::getHeight() const { return 1; }
 
 bool ListRange::isInteractive() const { return false; }
 
@@ -112,7 +112,7 @@ void PaddingRange::draw(
     ICanvas& canvas, size_t firstIndex, size_t lastIndex, size_t selectedIndex
 ) const {}
 
-int PaddingRange::getHeight() const { return height; }
+size_t PaddingRange::getHeight() const { return height; }
 
 bool AddButtonRange::isInteractive() const { return true; }
 

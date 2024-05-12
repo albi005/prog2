@@ -73,7 +73,7 @@ void VaccinationsRange::onBeforeMeasure() {
     });
 }
 
-int VaccinationsRange::getHeight() const {
+size_t VaccinationsRange::getHeight() const {
     if (orderedOwners.empty())
         return 1;
     return orderedOwners.size();

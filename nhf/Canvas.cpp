@@ -86,3 +86,32 @@ std::ostream& operator<<(std::ostream& os, Clip clip) {
     clip.write(os);
     return os;
 }
+
+SearchedString::SearchedString(
+    const std::string& s,
+    size_t start,
+    size_t length,
+    size_t maxLen,
+    Color textColor,
+    Color highlightColor,
+    Color surfaceColor
+)
+    : s(s), start(start), length(length), maxLen(maxLen), textColor(textColor),
+      highlightColor(highlightColor), surfaceColor(surfaceColor) {}
+
+void SearchedString::draw(ICanvas& canvas) const {
+    size_t actualWritten = 0;
+    canvas.draw(textColor, surfaceColor);
+    for (size_t i = 0; i < s.size() && actualWritten < maxLen;) {
+        if (i == start)
+            canvas.draw(highlightColor);
+        else if (i == start + length)
+            canvas.draw(textColor);
+
+        canvas.draw() << s[i++];
+        actualWritten++;
+
+        while (utils::isContinuationByte(s[i]))
+            canvas.draw() << s[i++];
+    }
+}

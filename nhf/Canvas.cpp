@@ -35,12 +35,6 @@ Size PaddedCanvas::getSize() const {
     return Size(orig.w - l - r, orig.h - t - b);
 }
 
-std::ostream& PaddedCanvas::setPosition(Point pos) {
-    pos.x += l;
-    pos.y += t;
-    return inner.setPosition(pos);
-}
-
 Color PaddedCanvas::getSurfaceColor() const { return inner.getSurfaceColor(); }
 
 void PaddedCanvas::setSurfaceColor(Color color) {
@@ -51,6 +45,12 @@ std::ostream& PaddedCanvas::draw(Point pos, Color fg, Color bg) {
     pos.x += l;
     pos.y += t;
     return inner.draw(pos, fg, bg);
+}
+
+std::ostream& PaddedCanvas::draw(Point pos) {
+    pos.x += l;
+    pos.y += t;
+    return inner.draw(pos);
 }
 
 std::ostream& PaddedCanvas::draw(Color fg, Color bg) {

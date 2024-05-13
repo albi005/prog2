@@ -52,7 +52,7 @@ void OwnersRange::draw(
         Color textColor = selected ? SURFACE : ON_SURFACE;
         Color surfaceColor = selected ? ON_SURFACE : canvas.getSurfaceColor();
 
-        canvas.setPosition({2, y});
+        canvas.draw({2, y});
         if (searchTerm.empty())
             canvas.draw(textColor, surfaceColor) << Clip(name, 20);
         else
@@ -69,7 +69,7 @@ void OwnersRange::draw(
 
         canvas.draw({26, y}, textColor, surfaceColor)
             << Clip(owner->address, 34);
-        canvas.setPosition({64, y}) << Clip(owner->contact, 25);
+        canvas.draw({64, y}) << Clip(owner->contact, 25);
     }
 }
 

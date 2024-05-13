@@ -10,19 +10,23 @@
 OstreamCanvas::OstreamCanvas(std::ostream& os) : os(os) {}
 
 void OstreamCanvas::updateScreenSize(std::istream& is) {
-    setCursorPosition({9999, 9999});
-    os << CSI "6n"; // ask for cursor position
+    if (cursorPosRequestFinished) {
+        setCursorPosition({9999, 9999});
+        os << CSI "6n"; // ask for cursor position
+    }
 
-    // response is CSIy;xR
-    is >> Expect(CSI) >> height >> Expect(";") >> width >> Expect("R");
+    if (is.peek() == '\x1b') {
+        cursorPosRequestFinished = true;
+
+        // response is CSIy;xR
+        is >> Expect(CSI) >> height >> Expect(";") >> width >> Expect("R");
+    } else {
+        // try again later
+        cursorPosRequestFinished = false;
+    }
 }
 
 Size OstreamCanvas::getSize() const { return {width, height}; }
-
-std::ostream& OstreamCanvas::setPosition(Point pos) {
-    setCursorPosition(pos);
-    return os;
-}
 
 Color OstreamCanvas::getSurfaceColor() const { return surfaceColor; }
 
@@ -31,6 +35,11 @@ void OstreamCanvas::setSurfaceColor(Color color) { surfaceColor = color; }
 std::ostream& OstreamCanvas::draw(Point pos, Color fg, Color bg) {
     setCursorPosition(pos);
     return draw(fg, bg);
+}
+
+std::ostream& OstreamCanvas::draw(Point pos) {
+    setCursorPosition(pos);
+    return os;
 }
 
 std::ostream& OstreamCanvas::draw(Color fg, Color bg) {

@@ -56,7 +56,7 @@ void AnimalsRange::draw(
         Color textColor = selected ? SURFACE : ON_SURFACE;
         Color surfaceColor = selected ? ON_SURFACE : canvas.getSurfaceColor();
 
-        canvas.setPosition({2, y});
+        canvas.draw({2, y});
         if (searchTerm.empty())
             canvas.draw(textColor, surfaceColor) << Clip(name, 8);
         else
@@ -73,8 +73,8 @@ void AnimalsRange::draw(
 
         canvas.draw({12, y}, textColor, surfaceColor)
             << Clip(animal->species, 8);
-        canvas.setPosition({24, y}) << Clip(animal->owner->name, 24);
-        canvas.setPosition({48, y}) << Clip(animal->owner->address, 35);
+        canvas.draw({24, y}) << Clip(animal->owner->name, 24);
+        canvas.draw({48, y}) << Clip(animal->owner->address, 35);
     }
 }
 

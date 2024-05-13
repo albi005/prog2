@@ -104,7 +104,7 @@ void VaccinationsRange::draw(
         } else
             canvas.draw(surface, surface);
 
-        canvas.setPosition({2, y});
+        canvas.draw({2, y});
         if (days > 365)
             canvas.draw(selected ? ON_ERROR : ERROR);
         else if (oldestVaccination == maxTime)
@@ -119,17 +119,17 @@ void VaccinationsRange::draw(
             canvas.draw() << days << " napja";
 
         int x = 16;
-        canvas.setPosition({x, y});
+        canvas.draw({x, y});
         canvas.draw(selected ? surface : ON_SURFACE)
             << Clip(o->name, maxNameLength);
 
         x += maxNameLength + 4;
 
-        canvas.setPosition({x, y});
+        canvas.draw({x, y});
         canvas.draw() << Clip(o->address, 30);
         x += 34;
 
-        canvas.setPosition({x, y});
+        canvas.draw({x, y});
         canvas.draw() << Clip(o->contact, 15);
     }
 }

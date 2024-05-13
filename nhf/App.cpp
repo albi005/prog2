@@ -18,7 +18,7 @@ void Tabs::draw(ICanvas& canvas) {
 
     canvas.fill({0, 0, canvas.getSize().w, 1}, backdrop);
 
-    canvas.setPosition({0, 0});
+    canvas.draw({0, 0});
     for (size_t i = 0; i < tabs.size(); ++i) {
         bool isSelected = selectedIndex == i;
         canvas.draw(

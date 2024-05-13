@@ -48,7 +48,7 @@ struct Rect {
 class ICanvas {
   public:
     virtual Size getSize() const = 0;
-    virtual std::ostream& setPosition(Point pos) = 0;
+    virtual std::ostream& draw(Point pos) = 0;
 
     virtual Color getSurfaceColor() const = 0;
     virtual void setSurfaceColor(Color color) = 0;
@@ -79,10 +79,10 @@ class PaddedCanvas final : public ICanvas {
     ICanvas& inner;
 
     Size getSize() const override;
-    std::ostream& setPosition(Point pos) override;
     Color getSurfaceColor() const override;
     void setSurfaceColor(Color color) override;
     std::ostream& draw(Point pos, Color fg, Color bg) override;
+    std::ostream& draw(Point pos) override;
     std::ostream& draw(Color fg, Color bg) override;
     std::ostream& draw(Color fg) override;
     std::ostream& draw() override;

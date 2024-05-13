@@ -30,7 +30,7 @@ int main() {
     while (true) {
         canvas.updateScreenSize(std::cin);
         app.draw(canvas);
-        canvas.setPosition({999, 999});
+        canvas.draw({999, 999});
         econio_flush();
 
         char input = econio_getch();

@@ -8,11 +8,9 @@ View& Tabs::Tab::getView() { return view; }
 
 const char* Tabs::Tab::getTitle() { return title; }
 
-Tabs::Tabs(std::vector<Tab>* tabs, PageStack& pageStack)
-    : StackablePage(pageStack), tabs(*tabs) {}
+Tabs::Tabs(std::vector<Tab>* tabs) : tabs(*tabs) {}
 
 void Tabs::draw(ICanvas& canvas) {
-    canvas.setSurfaceColor(getSurfaceColor());
     const Color backdrop = SURFACE_CONTAINER_LOWEST;
     const Color surface = canvas.getSurfaceColor();
 

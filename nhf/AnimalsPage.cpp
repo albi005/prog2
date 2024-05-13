@@ -1,6 +1,7 @@
 #include "AnimalsPage.hpp"
 #include "AnimalPage.hpp"
 #include "ListView.hpp"
+#include "constants.h"
 
 // TODO: perhaps refactor AnimalsPage and OwnersPage into a template
 void AnimalsRange::onBeforeMeasure() {
@@ -50,11 +51,11 @@ void AnimalsRange::draw(
         auto& name = animal->name;
         bool selected = selectedIndex == i;
 
-        if (selected)
-            canvas.fill({0, y, canvas.getSize().w, 1}, ON_SURFACE);
-
         Color textColor = selected ? SURFACE : ON_SURFACE;
         Color surfaceColor = selected ? ON_SURFACE : canvas.getSurfaceColor();
+
+        if (selected)
+            canvas.fill({0, y, canvas.getSize().w, 1}, surfaceColor);
 
         canvas.draw({2, y});
         if (searchTerm.empty())
@@ -79,7 +80,10 @@ void AnimalsRange::draw(
 }
 
 bool AnimalsRange::handleInput(char input, size_t selectedIndex) {
-    /*todo*/
+    if (input == KEY_ENTER) {
+        openAnimal(*filteredAnimals[selectedIndex].first);
+        return true;
+    }
     return false;
 }
 

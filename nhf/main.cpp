@@ -9,14 +9,11 @@ int main() {
     Data data = Data("owners", "animals", "treatments");
 
     PageStack& pageStack = *new PageStack();
-    Tabs* tabs = new Tabs(
-        new std::vector<Tabs::Tab>{
-            Tabs::Tab(*new VaccinationsPage(data, pageStack), "Oltások"),
-            Tabs::Tab(*new OwnersPage(data, pageStack), "Tulajdonosok"),
-            Tabs::Tab(*new AnimalsPage(data, pageStack), "Állatok")
-        },
-        pageStack
-    );
+    Tabs* tabs = new Tabs(new std::vector<Tabs::Tab>{
+        Tabs::Tab(*new VaccinationsPage(data, pageStack), "Oltások"),
+        Tabs::Tab(*new OwnersPage(data, pageStack), "Tulajdonosok"),
+        Tabs::Tab(*new AnimalsPage(data, pageStack), "Állatok")
+    });
     pageStack.push(tabs);
 
     App app(pageStack);

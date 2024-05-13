@@ -27,23 +27,20 @@ void PaddingView::draw(ICanvas& canvas) {
     ContentView::draw(padded);
 }
 
-void PageStack::push(StackablePage* page) {
-    pages.push_back(page);
-    page->setLevel(pages.size() - 1);
-}
+void PageStack::push(View* page) { pages.push_back(page); }
 
-void PageStack::pop(const StackablePage& page) {
-    if (pages.back() != &page)
-        throw std::logic_error("Can't pop page that is not the top of the stack"
-        );
-    pages.pop_back();
-}
+size_t PageStack::size() const { return pages.size(); }
 
 void PageStack::draw(ICanvas& canvas) {
     size_t level = 0;
-    for (auto& page : pages) {
+    for (auto page : pages) {
         PaddedCanvas paddedCanvas(
             level * 6, level * 2, level * 6, level * 2, canvas
+        );
+        canvas.setSurfaceColor(getSurfaceColor(level));
+        Size size = paddedCanvas.getSize();
+        paddedCanvas.fill(
+            {0, 0, size.w, size.h}, paddedCanvas.getSurfaceColor()
         );
         page->draw(paddedCanvas);
         level++;
@@ -59,21 +56,16 @@ bool PageStack::handleInput(char input) {
     if (pages.back()->handleInput(input))
         return true;
     if (input == KEY_ESCAPE || input == 'q') {
+        delete pages.back();
         pages.pop_back();
+        if (pages.empty())
+            return false;
         return true;
     }
     return false;
 }
 
-StackablePage::StackablePage(PageStack& pageStack) : pageStack(pageStack) {}
-
-void StackablePage::popSelf() { pageStack.pop(*this); }
-
-void StackablePage::push(StackablePage* page) { pageStack.push(page); }
-
-void StackablePage::setLevel(uint8_t value) { this->level = value; }
-
-Color StackablePage::getSurfaceColor() const {
+Color PageStack::getSurfaceColor(size_t level) const {
     static const Color colors[] = {
         SURFACE_CONTAINER_LOWEST,
         SURFACE_CONTAINER_LOW,

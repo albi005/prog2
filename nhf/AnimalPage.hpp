@@ -7,11 +7,15 @@
 
 class TreatmentsRange : public ListRange {
     Animal& animal;
-    std::function<void()> deleteTreatment;
+    std::function<void(Treatment&)> deleteTreatment;
     StringEditor* treatmentNameEditor = nullptr;
 
-    bool isInteractive() const override { return true; }
+    // set in onBeforeMeasure
+    std::vector<Treatment*> treatments;
 
+    void onBeforeMeasure() override;
+    bool isInteractive() const override;
+    size_t getHeight() const override;
     void draw(
         ICanvas& canvas,
         size_t firstIndex,
@@ -21,10 +25,12 @@ class TreatmentsRange : public ListRange {
     virtual bool handleInput(char input, size_t selectedIndex) override;
 
   public:
-    TreatmentsRange(Animal& animal, std::function<void()> deleteTreatment);
+    TreatmentsRange(
+        Animal& animal, std::function<void(Treatment&)> deleteTreatment
+    );
 };
 
-class AnimalPage : public ContentView, public StackablePage {
+class AnimalPage : public ContentView {
     Animal& animal;
 
   public:

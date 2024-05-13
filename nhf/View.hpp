@@ -38,33 +38,16 @@ class PaddingView final : public ContentView {
     PaddingView(View* content, int x, int y);
 };
 
-class StackablePage;
-
 /// A stack of pages, drawn on top of each other
 class PageStack final : public View {
-    std::vector<StackablePage*> pages;
+    std::vector<View*> pages;
+
+    Color getSurfaceColor(size_t level) const;
 
   public:
-    void push(StackablePage* page); // takes ownership
-    void pop(const StackablePage& page);
+    void push(View* page); // takes ownership
     void draw(ICanvas& canvas) override;
     bool handleInput(char input) override;
+    size_t size() const;
     ~PageStack() override;
-};
-
-/// Convenience class for pages that can be pushed onto a PageStack.
-/// Stores a reference to the PageStack
-class StackablePage : public virtual View {
-    PageStack& pageStack;
-    uint8_t level;
-
-  protected:
-    void popSelf();
-    void push(StackablePage* page); // takes ownership
-    Color getSurfaceColor() const;
-
-  public:
-    explicit StackablePage(PageStack& pageStack);
-    void setLevel(uint8_t value);
-    virtual ~StackablePage() = default;
 };

@@ -51,6 +51,11 @@ template <typename TEntity> class Repository {
 
     auto end() const { return entities.end(); }
 
+    virtual void remove(TEntity& entity) {
+        entities.erase(entity.id);
+        delete &entity;
+    }
+
     // disable copying
     Repository(const Repository&) = delete;
     void operator=(const Repository&) = delete;
@@ -71,6 +76,7 @@ class OwnerRepository final : public Repository<Owner> {
     OwnerRepository(AnimalRepository& animals);
     using Repository<Owner>::load;
     Owner* createNew();
+    void remove(Owner& owner) override;
 };
 
 class AnimalRepository final : public Repository<Animal> {
@@ -80,12 +86,14 @@ class AnimalRepository final : public Repository<Animal> {
     AnimalRepository(TreatmentRepository& treatments);
     void load(std::istream& is, const OwnerRepository& owners);
     Animal* createNew(Owner& owner);
+    void remove(Animal& entity) override;
 };
 
 class TreatmentRepository final : public Repository<Treatment> {
   public:
     void load(std::istream& is, const AnimalRepository& animals);
     Treatment* createNew(Animal& animal);
+    void remove(Treatment& entity) override;
 };
 
 struct Data {

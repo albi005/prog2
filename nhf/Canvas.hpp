@@ -78,6 +78,8 @@ class PaddedCanvas final : public ICanvas {
     int l, t, r, b;
     ICanvas& inner;
 
+  public:
+    PaddedCanvas(int l, int t, int r, int b, ICanvas& inner);
     Size getSize() const override;
     Color getSurfaceColor() const override;
     void setSurfaceColor(Color color) override;
@@ -87,9 +89,6 @@ class PaddedCanvas final : public ICanvas {
     std::ostream& draw(Color fg) override;
     std::ostream& draw() override;
     void fill(Rect area, Color bg) override;
-
-  public:
-    PaddedCanvas(int l, int t, int r, int b, ICanvas& inner);
 };
 
 /// @brief Clips a string to a maximum length.

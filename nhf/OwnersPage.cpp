@@ -1,5 +1,6 @@
 #include "OwnersPage.hpp"
 #include "OwnerPage.hpp"
+#include "constants.h"
 
 void OwnersRange::onBeforeMeasure() {
     filteredOwners.clear();
@@ -74,7 +75,10 @@ void OwnersRange::draw(
 }
 
 bool OwnersRange::handleInput(char input, size_t selectedIndex) {
-    /*todo*/
+    if (input == KEY_ENTER) {
+        openOwner(*filteredOwners[selectedIndex].first);
+        return true;
+    }
     return false;
 }
 

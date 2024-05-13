@@ -8,8 +8,13 @@
 class OwnerAnimalsRange : public ListRange {
     Owner& owner;
     std::function<void(Animal&)> openAnimal;
+    std::function<void(Animal&)> removeAnimal;
 
+    std::vector<Animal*> animals;
+
+    void onBeforeMeasure() override;
     bool isInteractive() const override;
+    size_t getHeight() const override;
     void draw(
         ICanvas& canvas,
         size_t firstIndex,
@@ -19,10 +24,14 @@ class OwnerAnimalsRange : public ListRange {
     virtual bool handleInput(char input, size_t selectedIndex) override;
 
   public:
-    OwnerAnimalsRange(Owner& owner, std::function<void(Animal&)> openAnimal);
+    OwnerAnimalsRange(
+        Owner& owner,
+        std::function<void(Animal&)> openAnimal,
+        std::function<void(Animal&)> removeAnimal
+    );
 };
 
-class OwnerPage : public ContentView, public StackablePage {
+class OwnerPage : public ContentView {
     Owner& owner;
 
   public:

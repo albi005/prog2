@@ -1,4 +1,5 @@
 #include "data.hpp"
+#include <algorithm>
 
 OwnerRepository::OwnerRepository(AnimalRepository& animals)
     : animals(animals) {}
@@ -10,16 +11,21 @@ Owner* OwnerRepository::createNew() {
     return owner;
 }
 
+void OwnerRepository::remove(Owner& owner) {
+    for (auto pair : owner.animals)
+        animals.remove(*pair.second);
+    Repository::remove(owner);
+}
+
 AnimalRepository::AnimalRepository(TreatmentRepository& treatments)
     : treatments(treatments) {}
 
 void AnimalRepository::load(std::istream& is, const OwnerRepository& owners) {
     Repository<Animal>::load(is);
     for (auto [id, animal] : entities) {
-        std::ignore = id;
         auto& owner = owners.at(animal->ownerId);
         animal->owner = &owner;
-        owner.animals.push_back(animal);
+        owner.animals.emplace(id, animal);
     }
 }
 
@@ -29,8 +35,16 @@ Animal* AnimalRepository::createNew(Owner& owner) {
     animal->ownerId = owner.id;
     animal->owner = &owner;
     entities[animal->id] = animal;
-    owner.animals.push_back(animal);
+    owner.animals.emplace(animal->id, animal);
     return animal;
+}
+
+void AnimalRepository::remove(Animal& entity) {
+    for (auto pair : entity.treatments)
+        treatments.remove(*pair.second);
+    Owner& owner = *entity.owner;
+    owner.animals.erase(entity.id);
+    Repository::remove(entity);
 }
 
 void TreatmentRepository::load(
@@ -38,10 +52,9 @@ void TreatmentRepository::load(
 ) {
     Repository<Treatment>::load(is);
     for (auto [id, treatment] : entities) {
-        std::ignore = id;
         auto& animal = animals.at(treatment->animalId);
         treatment->animal = &animal;
-        animal.treatments.push_back(treatment);
+        animal.treatments.emplace(id, treatment);
     }
 }
 
@@ -51,8 +64,14 @@ Treatment* TreatmentRepository::createNew(Animal& animal) {
     treatment->animalId = animal.id;
     treatment->animal = &animal;
     entities[treatment->id] = treatment;
-    animal.treatments.push_back(treatment);
+    animal.treatments.emplace(treatment->id, treatment);
     return treatment;
+}
+
+void TreatmentRepository::remove(Treatment& entity) {
+    Animal& animal = *entity.animal;
+    animal.treatments.erase(entity.id);
+    Repository::remove(entity);
 }
 
 void Data::load(

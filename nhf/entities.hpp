@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <unordered_map>
 #include <vector>
 
 struct Serializable {
@@ -28,7 +29,7 @@ struct Owner final : public Entity {
     std::string address;
     std::string contact;
 
-    std::vector<Animal*> animals;
+    std::unordered_map<size_t, Animal*> animals;
 
     void serialize(std::ostream& os) const override;
     bool deserialize(std::istream& is) override;
@@ -45,7 +46,7 @@ struct Animal final : public Entity {
     std::string species;
 
     Owner* owner;
-    std::vector<Treatment*> treatments;
+    std::unordered_map<size_t, Treatment*> treatments;
 
     void serialize(std::ostream& os) const override;
     bool deserialize(std::istream& is) override;

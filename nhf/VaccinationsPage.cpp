@@ -34,9 +34,11 @@ void VaccinationsRange::onBeforeMeasure() {
     for (const auto& ownerPair : owners) {
         auto owner = ownerPair.second;
         time_t oldestVaccination = std::numeric_limits<time_t>::max();
-        for (auto animal : owner->animals) {
+        for (auto [animalId, animal] : owner->animals) {
+            std::ignore = animalId;
             time_t lastVaccination = 0;
-            for (auto treatment : animal->treatments) {
+            for (auto [treatmentId, treatment] : animal->treatments) {
+                std::ignore = treatmentId;
                 if (treatment->wasVaccinated &&
                     treatment->date > lastVaccination)
                     lastVaccination = treatment->date;

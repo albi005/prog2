@@ -143,7 +143,7 @@ class AddButtonRange : public ListRange {
 /// then calls draw on each child that is visible.
 /// When handling input, it calls handleInput on the selected ListRange, passing
 /// in the index of the selected item inside the ListRange.
-class ListView : public View {
+class ListView final : public View {
     size_t selectedItemIndex = 0;
     std::vector<ListRange*>* ranges;
 
@@ -173,6 +173,7 @@ class ListView : public View {
     ListView(std::vector<ListRange*>* ranges);
     virtual void draw(ICanvas& canvas) override;
     virtual bool handleInput(char input) override;
+    ~ListView() override;
 
   private:
     /// @brief Sets interactiveCount, selectedRange and selectedIndexInRange and

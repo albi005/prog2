@@ -34,6 +34,8 @@ template <typename TEntity> class Repository {
     }
 
   public:
+    Repository() = default;
+
     virtual void save(std::ostream& os) const {
         for (std::pair<size_t, TEntity*> kv : entities)
             kv.second->serialize(os);
@@ -49,6 +51,10 @@ template <typename TEntity> class Repository {
 
     auto end() const { return entities.end(); }
 
+    // disable copying
+    Repository(const Repository&) = delete;
+    void operator=(const Repository&) = delete;
+
     ~Repository() {
         for (std::pair<size_t, TEntity*> kv : entities)
             delete kv.second;
@@ -58,7 +64,7 @@ template <typename TEntity> class Repository {
 class AnimalRepository;
 class TreatmentRepository;
 
-class OwnerRepository : public Repository<Owner> {
+class OwnerRepository final : public Repository<Owner> {
     AnimalRepository& animals; // needed by destructor
 
   public:
@@ -67,7 +73,7 @@ class OwnerRepository : public Repository<Owner> {
     Owner* createNew();
 };
 
-class AnimalRepository : public Repository<Animal> {
+class AnimalRepository final : public Repository<Animal> {
     TreatmentRepository& treatments; // needed by destructor
 
   public:
@@ -76,7 +82,7 @@ class AnimalRepository : public Repository<Animal> {
     Animal* createNew(Owner& owner);
 };
 
-class TreatmentRepository : public Repository<Treatment> {
+class TreatmentRepository final : public Repository<Treatment> {
   public:
     void load(std::istream& is, const AnimalRepository& animals);
     Treatment* createNew(Animal& animal);
@@ -120,4 +126,9 @@ struct Data {
         const char* animalsFile,
         const char* treatmentsFile
     );
+
+    // disable copying // rust fixes this // i hate this language
+    // why is this not the default
+    Data(const Data&) = delete;
+    void operator=(const Data&) = delete;
 };

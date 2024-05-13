@@ -50,6 +50,7 @@ bool Tabs::handleInput(char input) {
 Tabs::~Tabs() {
     for (auto& tab : tabs)
         delete &tab.getView();
+    delete &tabs;
 }
 
 App::App(PageStack& pageStack) : ContentView(&pageStack) {}

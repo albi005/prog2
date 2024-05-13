@@ -258,3 +258,9 @@ ListView::ScrollBounds ListView::calculateScrollBounds(
     /*TODO: scroll bounds calculation*/
     return {0, 0};
 }
+
+ListView::~ListView() {
+    for (auto range : *ranges)
+        delete range;
+    delete ranges;
+}

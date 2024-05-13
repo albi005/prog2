@@ -10,7 +10,7 @@ void OwnerAnimalsRange::draw(
 
 bool OwnerAnimalsRange::handleInput(char input, size_t selectedIndex) {
     /*todo*/
-    throw;
+    return false;
 }
 
 OwnerAnimalsRange::OwnerAnimalsRange(
@@ -24,7 +24,7 @@ OwnerPage::OwnerPage(Owner& owner, Data& data, PageStack& pageStack)
           new EditablePropertyRange("Cím", owner.address),
           new EditablePropertyRange("Elérhetőség", owner.contact),
           new PaddingRange(),
-          new AddButtonRange([data, &pageStack, &owner]() mutable {
+          new AddButtonRange([&data, &pageStack, &owner]() mutable {
               auto animal = data.animals.createNew(owner);
               pageStack.push(new AnimalPage(*animal, data, pageStack));
           }),

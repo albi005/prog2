@@ -5,7 +5,7 @@
 #include <map>
 
 class VaccinationsRange : public ListRange {
-    Data& data;
+    OwnerRepository& owners;
     std::function<void(Owner&)> openOwner;
 
     // set in onBeforeMeasure
@@ -23,7 +23,9 @@ class VaccinationsRange : public ListRange {
     bool handleInput(char input, size_t selectedIndex) override;
 
   public:
-    VaccinationsRange(Data& data, std::function<void(Owner&)> openOwner);
+    VaccinationsRange(
+        OwnerRepository& owners, std::function<void(Owner&)> openOwner
+    );
 };
 
 class VaccinationsPage : public ContentView {

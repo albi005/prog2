@@ -6,14 +6,14 @@
 bool VaccinationsRange::isInteractive() const { return !orderedOwners.empty(); }
 
 VaccinationsRange::VaccinationsRange(
-    Data& data, std::function<void(Owner&)> openOwner
+    OwnerRepository& owners, std::function<void(Owner&)> openOwner
 )
-    : data(data), openOwner(openOwner) {}
+    : owners(owners), openOwner(openOwner) {}
 
 VaccinationsPage::VaccinationsPage(Data& data, PageStack& pageStack)
     : ContentView(new PaddingView(
           new ListView(new std::vector<ListRange*>{new VaccinationsRange(
-              data,
+              data.owners,
               [&pageStack, &data](Owner& owner) {
                   pageStack.push(new OwnerPage(owner, data, pageStack));
               }
@@ -26,14 +26,12 @@ VaccinationsPage::VaccinationsPage(Data& data, PageStack& pageStack)
       data(data), pageStack(pageStack) {}
 
 void VaccinationsRange::onBeforeMeasure() {
-    OwnerRepository& owners = data.owners;
-
     orderedOwners.clear();
 
     if (owners.empty())
         return;
 
-    for (const auto& ownerPair : data.owners) {
+    for (const auto& ownerPair : owners) {
         auto owner = ownerPair.second;
         time_t oldestVaccination = std::numeric_limits<time_t>::max();
         for (auto animal : owner->animals) {

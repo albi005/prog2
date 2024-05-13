@@ -24,6 +24,7 @@ class Tabs final : public virtual View, public StackablePage {
 
   private:
     size_t selectedIndex = 0;
+    // owned
     std::vector<Tab>& tabs;
 
   public:

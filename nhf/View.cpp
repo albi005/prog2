@@ -58,7 +58,7 @@ PageStack::~PageStack() {
 bool PageStack::handleInput(char input) {
     if (pages.back()->handleInput(input))
         return true;
-    if (input == KEY_ESCAPE) {
+    if (input == KEY_ESCAPE || input == 'q') {
         pages.pop_back();
         return true;
     }

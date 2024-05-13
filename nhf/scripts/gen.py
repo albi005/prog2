@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import faker
 import random
+from datetime import datetime, timedelta
 
 fake = faker.Faker('hu_HU', use_weighting=True)
 faker.Faker.seed(0)
@@ -12,9 +13,12 @@ o = open("owners", mode="w")
 a = open("animals", mode="w")
 t = open("treatments", mode="w")
 
+current_date = datetime.now()
+ten_years_ago = current_date - timedelta(days=365*10)
+
 animalId = 0
 treatmentId = 0
-for ownerId in range(1,1000):
+for ownerId in range(1,30):
     print(ownerId, file=o)
     print(fake.last_name(), fake.first_name(), file=o)
     print(fake.street_address(), file=o)
@@ -30,11 +34,11 @@ for ownerId in range(1,1000):
         print(random.choice(animal_names), file=a)
         print(random.choice(["Kutya", "Macska", "Kutya", "Macska", "Kutya", "Macska", "Nyúl", "Hörcsög", "Egér"]), file=a)
 
-        treatmentDates = sorted([fake.unix_time() for _ in range(random.randint(0,10))])
+        treatmentDates = sorted([fake.unix_time(start_datetime=ten_years_ago, end_datetime=current_date) for _ in range(random.randint(0,10))])
         for date in treatmentDates:
             treatmentId += 1
             print(treatmentId, file=t)
             print(animalId, file=t)
             print(int(date), file=t)
             print(random.randint(0,1), file=t)
-            print("Valami kezelés", file=t)
+            print("Kezelés leírása ide", file=t)

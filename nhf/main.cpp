@@ -21,7 +21,7 @@ int main() {
 
     App app(pageStack);
 
-    // enable handling key presses as they come in
+    // enable handling key presses as they come in,
     // instead of waiting for newlines
     econio_rawmode();
 

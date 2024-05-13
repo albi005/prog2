@@ -1,6 +1,7 @@
 #include "VaccinationsPage.hpp"
 #include "OwnerPage.hpp"
 #include "constants.h"
+#include <limits>
 
 bool VaccinationsRange::isInteractive() const { return !orderedOwners.empty(); }
 
@@ -26,49 +27,33 @@ VaccinationsPage::VaccinationsPage(Data& data, PageStack& pageStack)
 
 void VaccinationsRange::onBeforeMeasure() {
     OwnerRepository& owners = data.owners;
-    AnimalRepository& animals = data.animals;
-    TreatmentRepository& treatments = data.treatments;
 
     orderedOwners.clear();
 
     if (owners.empty())
         return;
 
-    // animal id -> last vaccination
-    std::unordered_map<size_t, time_t> lastVaccinations(animals.size());
-    for (auto [id, animal] : animals)
-        lastVaccinations[id] = 0;
-    for (auto [id, treatment] : treatments) {
-        if (!treatment->wasVaccinated)
-            continue;
+    for (const auto& ownerPair : data.owners) {
+        auto owner = ownerPair.second;
+        time_t oldestVaccination = std::numeric_limits<time_t>::max();
+        for (auto animal : owner->animals) {
+            time_t lastVaccination = 0;
+            for (auto treatment : animal->treatments) {
+                if (treatment->wasVaccinated &&
+                    treatment->date > lastVaccination)
+                    lastVaccination = treatment->date;
+            }
 
-        Animal* animal = treatment->animal;
-        size_t animalId = animal->id;
-        if (treatment->date > lastVaccinations[animalId])
-            lastVaccinations[animalId] = treatment->date;
-    }
+            if (lastVaccination < oldestVaccination)
+                oldestVaccination = lastVaccination;
+        }
 
-    // owner -> the oldest last vaccination (most unvaccinated first)
-    std::unordered_map<Owner*, time_t> oldestVaccinations(owners.size());
-    currentTime = time(NULL);
-    // if the redraw was triggered by a new treatment, its date might equal the
-    // current time
-    maxTime = currentTime + 1;
-    for (auto [i, owner] : owners)
-        oldestVaccinations[owner] = maxTime;
-    for (auto [animalId, lastVaccination] : lastVaccinations) {
-        Animal& animal = animals.at(animalId);
-        Owner* owner = animal.owner;
-        time_t oldestVaccination = oldestVaccinations[owner];
-        if (lastVaccination < oldestVaccination)
-            oldestVaccinations[owner] = lastVaccination;
+        orderedOwners.push_back({oldestVaccination, owner});
     }
 
     // sort owners based on oldest vaccination.
-    // first owner should have the lowest value.
-    for (auto [owner, oldestVaccination] : oldestVaccinations)
-        orderedOwners.push_back({oldestVaccination, owner});
-    std::sort(orderedOwners.begin(), orderedOwners.end(), [](auto a, auto b) {
+    // first owner should have the animal that needs to be vaccinated the most
+    std::sort(orderedOwners.begin(), orderedOwners.end(), [](auto& a, auto& b) {
         return a.first < b.first;
     });
 }
@@ -91,6 +76,7 @@ void VaccinationsRange::draw(
     }
 
     size_t maxNameLength = 20; // TODO: make dynamic
+    time_t currentTime = time(nullptr);
 
     for (size_t i = firstIndex; i <= lastIndex; i++) {
         auto [oldestVaccination, o] = orderedOwners[i];
@@ -105,18 +91,17 @@ void VaccinationsRange::draw(
             canvas.draw(surface, surface);
 
         canvas.draw({2, y});
-        if (days > 365)
-            canvas.draw(selected ? ON_ERROR : ERROR);
-        else if (oldestVaccination == maxTime)
-            canvas.draw(selected ? surface : ON_SURFACE_VARIANT);
-        else
-            canvas.draw(selected ? ON_PRIMARY : PRIMARY);
-        if (oldestVaccination == 0)
-            canvas.draw() << "soha";
-        else if (oldestVaccination == maxTime)
-            canvas.draw() << "-";
-        else
+        if (o->animals.empty())
+            canvas.draw(selected ? surface : ON_SURFACE_VARIANT) << '-';
+        else if (oldestVaccination == 0) // no vaccinations found
+            canvas.draw(selected ? ON_ERROR : ERROR) << "nem volt";
+        else {
+            if (days > 365)
+                canvas.draw(selected ? ON_ERROR : ERROR);
+            else
+                canvas.draw(selected ? ON_PRIMARY : PRIMARY);
             canvas.draw() << days << " napja";
+        }
 
         int x = 16;
         canvas.draw({x, y});

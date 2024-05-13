@@ -10,8 +10,6 @@ class VaccinationsRange : public ListRange {
 
     // set in onBeforeMeasure
     std::vector<std::pair<time_t, Owner*>> orderedOwners;
-    time_t currentTime;
-    time_t maxTime;
 
     bool isInteractive() const override;
     void onBeforeMeasure() override;

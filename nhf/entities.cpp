@@ -45,9 +45,8 @@ void Treatment::serialize(std::ostream& os) const {
 bool Treatment::deserialize(std::istream& is) {
     if (!(is >> id))
         return false;
-    is >> animalId;
+    is >> animalId >> date >> wasVaccinated;
     is.ignore(); // skip newline
     std::getline(is, description);
-    is >> date >> wasVaccinated;
     return true;
 }

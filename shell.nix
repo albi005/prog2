@@ -9,6 +9,10 @@
         gdb
         graphviz
         zip
+        (pkgs.python3.withPackages (python-pkgs: with python-pkgs; [
+            faker
+        ]))
+
     ];
     shellHook = ''
         export OPEN_DEBUG_PATH=${pkgs.vscode-extensions.ms-vscode.cpptools}/share/vscode/extensions/ms-vscode.cpptools/debugAdapters/bin/OpenDebugAD7;

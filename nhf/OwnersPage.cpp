@@ -9,6 +9,7 @@ void OwnersRange::onBeforeMeasure() {
         return;
 
     for (auto [id, owner] : data.owners) {
+        std::ignore = id;
         if (searchTerm.empty()) {
             filteredOwners.push_back({owner, 0});
         } else {

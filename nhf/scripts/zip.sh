@@ -8,6 +8,7 @@
 set -e
 
 cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" || exit 1
+cd ..
 
 rm -fr out/submit
 mkdir -p out/submit

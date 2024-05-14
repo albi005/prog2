@@ -11,6 +11,7 @@ void AnimalsRange::onBeforeMeasure() {
         return;
 
     for (auto [id, animal] : data.animals) {
+        std::ignore = id;
         if (searchTerm.empty()) {
             filteredAnimals.push_back({animal, 0});
         } else {

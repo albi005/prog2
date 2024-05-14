@@ -8,8 +8,10 @@ size_t ListRange::getHeight() const { return 1; }
 bool ListRange::isInteractive() const { return false; }
 
 bool ListRange::handleInput(char input, size_t selectedIndex) {
-    /* TODO: throw an exception */
-    return false;
+    if (isInteractive())
+        throw std::logic_error("handleInput called on non-interactive range");
+    else
+        throw std::runtime_error("handleInput not implemented for this range");
 }
 
 ListRange::~ListRange() {}
@@ -240,6 +242,12 @@ bool ListView::handleInput(char input) {
             selectedItemIndex =
                 (selectedItemIndex - 1 + interactiveCount) % interactiveCount;
             return true;
+        case 'g':
+            selectedItemIndex = 0;
+            return true;
+        case 'G':
+            selectedItemIndex = interactiveCount - 1;
+            return true;
     }
 
     return false;
@@ -248,15 +256,18 @@ bool ListView::handleInput(char input) {
 ListView::ScrollBounds ListView::calculateScrollBounds(
     size_t selectedLineIndex, size_t listHeight, size_t availableHeight
 ) {
-    // https://neovim.io/doc/user/options.html#'scrolloff'
-    // number of lines to keep above and below the cursor visible when
-    // possible. disallow scrolling if the list fits on the screen
-    const size_t scrollOff = 8;
+    if (listHeight <= availableHeight)
+        return {0, 0};
 
-    std::ignore = selectedLineIndex + listHeight + scrollOff + availableHeight;
+    // scroll if the selected line is the first visible line (at the top)
+    size_t firstVisibleLineSelected = selectedLineIndex;
 
-    /*TODO: scroll bounds calculation*/
-    return {0, 0};
+    // scroll if the selected line is the last visible line (at the bottom)
+    int lastVisibleLineSelected = selectedLineIndex - availableHeight + 1;
+    if (lastVisibleLineSelected < 0)
+        lastVisibleLineSelected = 0;
+
+    return {(size_t)lastVisibleLineSelected, firstVisibleLineSelected};
 }
 
 ListView::~ListView() {

@@ -56,11 +56,16 @@ void TreatmentsRange::draw(
         if (treatment.wasVaccinated)
             canvas.draw({0, y}, textColor, surfaceColor) << "💉";
         canvas.draw({2, y}, textVariant, surfaceColor) << days << " napja";
+
         canvas.draw(
             {14, y},
             editing && selected ? ON_PRIMARY : textColor,
             editing && selected ? PRIMARY : surfaceColor
-        ) << treatment.description;
+        );
+        if (treatment.description.empty())
+            canvas.draw() << " ";
+        else
+            canvas.draw() << treatment.description;
     }
 }
 

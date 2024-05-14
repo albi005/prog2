@@ -37,6 +37,8 @@ int main() {
             break;
     }
 
+    data.save("owners", "animals", "treatments");
+
     econio_normalmode();
 }
 #endif

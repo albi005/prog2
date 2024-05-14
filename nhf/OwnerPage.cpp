@@ -35,11 +35,12 @@ void OwnerAnimalsRange::draw(
         int y = i - firstIndex;
         bool selected = i == selectedIndex;
         Color textColor = selected ? SURFACE : ON_SURFACE;
+        Color textVariant = selected ? SURFACE : ON_SURFACE_VARIANT;
         Color surfaceColor = selected ? ON_SURFACE : canvas.getSurfaceColor();
         if (selected)
             canvas.fill({0, y, canvas.getSize().w, 1}, surfaceColor);
-        canvas.draw({2, y}, textColor, surfaceColor) << animal.name;
-        canvas.draw({10, y}) << animal.species;
+        canvas.draw({2, y}, textColor, surfaceColor) << Clip(animal.name, 11);
+        canvas.draw({16, y}, textVariant, surfaceColor) << animal.species;
     }
 }
 

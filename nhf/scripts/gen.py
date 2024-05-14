@@ -1,4 +1,6 @@
-#!/usr/bin/env python3
+#!/usr/bin/env nix-shell
+#! nix-shell -i python3 --pure
+#! nix-shell -p "(pkgs.python3.withPackages (python-pkgs: with python-pkgs; [ faker ]))"
 import faker
 import random
 from datetime import datetime, timedelta

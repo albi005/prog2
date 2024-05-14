@@ -9,9 +9,6 @@
         gdb
         graphviz
         zip
-        (pkgs.python3.withPackages (python-pkgs: with python-pkgs; [
-            faker
-        ]))
 
     ];
     shellHook = ''

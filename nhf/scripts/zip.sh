@@ -1,23 +1,23 @@
 #!/usr/bin/env nix-shell
-#! nix-shell -i bash --pure
-#! nix-shell -p bash zip
-##pandoc python312Packages.weasyprint
-#
+#! nix-shell -i bash --pure --keep NIX_PATH
+#! nix-shell -p bash zip doxygen nix
+
 # https://nix.dev/tutorials/first-steps/reproducible-scripts
 # NixOS <3
 
 set -e
 
-cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" || exit 1
-cd ..
+cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" || exit 1 #nhf/scripts/
+cd .. #nhf/
+
+./scripts/gen.py #generate example data
+doxygen #generate relation diagrams
 
 rm -fr out/submit
 mkdir -p out/submit
 zip "out/submit/src.zip" *.cpp *.hpp *.c *.h
 zip "out/submit/data.zip" owners animals treatments
 
-# pandoc terv.md -o terv.html
-# weasyprint terv.html out/terv.pdf
-# nvm, just open nhf/ in obsidian, set theme to catppuccin frappe,
-# enable ignoring new lines (Strict line breaks ON) and export to pdf
-zip -Dr "out/submit/skeleton.zip" *.cpp *.hpp *.c *.h terv.pdf
+echo
+echo -e "\033[0;31m Did you update the PDFs? \033[0m"
+echo

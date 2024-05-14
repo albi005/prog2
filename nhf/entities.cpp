@@ -19,7 +19,7 @@ bool Owner::deserialize(std::istream& is) {
 
 void Animal::serialize(std::ostream& os) const {
     os << id << '\n';
-    os << ownerId << '\n';
+    os << owner->id << '\n';
     os << name << '\n';
     os << species << '\n';
 }
@@ -36,10 +36,10 @@ bool Animal::deserialize(std::istream& is) {
 
 void Treatment::serialize(std::ostream& os) const {
     os << id << '\n';
-    os << animalId << '\n';
-    os << description << '\n';
+    os << animal->id << '\n';
     os << date << '\n';
     os << wasVaccinated << '\n';
+    os << description << '\n';
 }
 
 bool Treatment::deserialize(std::istream& is) {

@@ -38,34 +38,30 @@ void TreatmentsRange::draw(
         return;
     }
 
-    bool editing = treatmentNameEditor != nullptr;
+    bool isEditing = treatmentNameEditor != nullptr;
     time_t now = time(nullptr);
 
     for (size_t i = firstIndex; i <= lastIndex; i++) {
         Treatment& treatment = *treatments[i];
         int y = i - firstIndex;
-        bool selected = i == selectedIndex;
-        Color textColor = selected ? SURFACE : ON_SURFACE;
-        Color textVariant = selected ? SURFACE : ON_SURFACE_VARIANT;
-        Color surfaceColor = selected ? ON_SURFACE : canvas.getSurfaceColor();
+        bool isSelected = i == selectedIndex;
+        bool highlight = isSelected && !isEditing;
+        Color textColor = highlight ? SURFACE : ON_SURFACE;
+        Color textVariant = highlight ? SURFACE : ON_SURFACE_VARIANT;
+        Color surfaceColor = highlight ? ON_SURFACE : canvas.getSurfaceColor();
         int days = utils::daysSince(treatment.date, now);
 
-        if (selected)
+        if (highlight)
             canvas.fill({0, y, canvas.getSize().w, 1}, surfaceColor);
 
         if (treatment.wasVaccinated)
             canvas.draw({0, y}, textColor, surfaceColor) << "💉";
         canvas.draw({2, y}, textVariant, surfaceColor) << days << " napja";
 
-        canvas.draw(
-            {14, y},
-            editing && selected ? ON_SECONDARY : textColor,
-            editing && selected ? SECONDARY : surfaceColor
-        );
-        if (treatment.description.empty())
-            canvas.draw() << " ";
-        else
-            canvas.draw() << treatment.description;
+        canvas.draw({15, y}, textColor, surfaceColor);
+        canvas.draw() << treatment.description;
+        if (isEditing && isSelected)
+            canvas.draw(ON_SURFACE, ON_SURFACE) << ' ';
     }
 }
 

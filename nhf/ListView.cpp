@@ -41,14 +41,16 @@ void EditablePropertyRange::draw(
     canvas.draw({0, 0}, ON_SURFACE_VARIANT, surface) << title << ": ";
 
     if (isSelected) {
-        if (isEditing)
-            canvas.draw(ON_SECONDARY_CONTAINER, SECONDARY_CONTAINER);
-        else
-            canvas.draw(surface, ON_SURFACE);
+        if (isEditing) {
+            canvas.draw(ON_SURFACE) << value;
+            canvas.draw(ON_SURFACE, ON_SURFACE) << ' ';
+        } else {
+            canvas.draw(surface, ON_SURFACE) << (value.empty() ? " " : value);
+        }
     } else {
         canvas.draw(ON_SURFACE, surface);
+        canvas.draw() << value;
     }
-    canvas.draw() << (value.empty() ? " " : value);
 }
 
 bool EditablePropertyRange::handleInput(char input, size_t selectedIndex) {

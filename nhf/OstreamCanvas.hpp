@@ -2,6 +2,13 @@
 
 #include "Canvas.hpp"
 
+// Escape character
+#define ESC "\x1b"
+
+// Control Sequence Introducer
+// https://en.wikipedia.org/wiki/ANSI_escape_code#CSI_(Control_Sequence_Introducer)_sequences
+#define CSI ESC "["
+
 class OstreamCanvas final : public ICanvas {
     int width = 0, height = 0;
     Color currFgColor = 1, currBgColor = 1;

@@ -11,23 +11,6 @@ extern "C" {
 #endif
 
 /**
- * Change text color to the one specified. See the color constants in
- * the colors header. */
-void econio_textcolor(int color);
-
-/**
- * Change background color to the one specified. See the color constants in
- * the colors header.
- */
-void econio_textbackground(int color);
-
-/** Jump to position (x, y) with the cursor. Upper left corner is (0, 0). */
-void econio_gotoxy(int x, int y);
-
-/** Clear the screen and return the cursor to the upper left position. */
-void econio_clrscr();
-
-/**
  * Send output to the terminal. To be called if many characters were
  * drawn to the terminal and there was no \n at the end.
  */
@@ -68,12 +51,6 @@ bool econio_kbhit();
  * Also function keys are not supported on Windows.
  */
 int econio_getch();
-
-/**
- * Delay for the specified amount of time (sec can be an arbitrary floating
- * point number, not just integer).
- */
-void econio_sleep(double sec);
 
 #ifdef __cplusplus
 } /* extern "C" */

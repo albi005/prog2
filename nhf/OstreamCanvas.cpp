@@ -1,12 +1,5 @@
 #include "OstreamCanvas.hpp"
 
-// Escape character
-#define ESC "\x1b"
-
-// Control Sequence Introducer
-// https://en.wikipedia.org/wiki/ANSI_escape_code#CSI_(Control_Sequence_Introducer)_sequences
-#define CSI ESC "["
-
 OstreamCanvas::OstreamCanvas(std::ostream& os) : os(os) {}
 
 void OstreamCanvas::updateScreenSize(std::istream& is) {

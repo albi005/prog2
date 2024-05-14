@@ -1,3 +1,4 @@
+#ifndef CPORTA
 #include "App.hpp"
 #include "OstreamCanvas.hpp"
 #include "View.hpp"
@@ -38,3 +39,4 @@ int main() {
 
     econio_normalmode();
 }
+#endif

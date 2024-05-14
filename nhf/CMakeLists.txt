@@ -43,3 +43,4 @@ add_executable(test
         test.cpp
         ${COMMON_FILES}
 )
+target_compile_definitions(test PUBLIC CPORTA)

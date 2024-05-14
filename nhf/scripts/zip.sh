@@ -1,6 +1,7 @@
 #!/usr/bin/env nix-shell
 #! nix-shell -i bash --pure
-#! nix-shell -p bash zip pandoc python312Packages.weasyprint
+#! nix-shell -p bash zip
+##pandoc python312Packages.weasyprint
 #
 # https://nix.dev/tutorials/first-steps/reproducible-scripts
 # NixOS <3

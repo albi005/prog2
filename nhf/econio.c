@@ -1,4 +1,4 @@
-// from https://infoc.eet.bme.hu/megjelenites/
+// based on https://infoc.eet.bme.hu/megjelenites/
 
 #ifdef MEMTRACE
 #include "memtrace.h"
@@ -18,72 +18,9 @@ static WORD bgcolor = COL_BLACK;
 static WORD fgcolor = COL_LIGHTGRAY;
 static bool rawmode = false;
 
-static WORD colormap[] = {
-    [COL_BLACK] = 0,
-    [COL_BLUE] = FOREGROUND_BLUE,
-    [COL_GREEN] = FOREGROUND_GREEN,
-    [COL_CYAN] = FOREGROUND_GREEN | FOREGROUND_BLUE,
-    [COL_RED] = FOREGROUND_RED,
-    [COL_MAGENTA] = FOREGROUND_RED | FOREGROUND_BLUE,
-    [COL_BROWN] = FOREGROUND_RED | FOREGROUND_GREEN,
-    [COL_LIGHTGRAY] = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE,
-    [COL_DARKGRAY] = FOREGROUND_INTENSITY,
-    [COL_LIGHTBLUE] = FOREGROUND_BLUE | FOREGROUND_INTENSITY,
-    [COL_LIGHTGREEN] = FOREGROUND_GREEN | FOREGROUND_INTENSITY,
-    [COL_LIGHTCYAN] = FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY,
-    [COL_LIGHTRED] = FOREGROUND_RED | FOREGROUND_INTENSITY,
-    [COL_LIGHTMAGENTA] =
-        FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_INTENSITY,
-    [COL_YELLOW] = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY,
-    [COL_WHITE] = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE |
-                  FOREGROUND_INTENSITY,
-};
-
 #define STDOUT GetStdHandle(STD_OUTPUT_HANDLE)
 
-void econio_gotoxy(int x, int y) {
-    COORD dwCursorPosition;
-    dwCursorPosition.X = (SHORT)x;
-    dwCursorPosition.Y = (SHORT)y;
-    SetConsoleCursorPosition(STDOUT, dwCursorPosition);
-}
-
-void econio_textbackground(int newcolor) {
-    if (newcolor == COL_RESET)
-        newcolor = COL_BLACK;
-    assert(newcolor >= 0 && newcolor < 16);
-    bgcolor = (WORD)(colormap[newcolor] << 4);
-    SetConsoleTextAttribute(STDOUT, fgcolor | bgcolor);
-}
-
-void econio_textcolor(int newcolor) {
-    if (newcolor == COL_RESET)
-        newcolor = COL_LIGHTGRAY;
-    assert(newcolor >= 0 && newcolor < 16);
-    fgcolor = (WORD)colormap[newcolor];
-    SetConsoleTextAttribute(STDOUT, fgcolor | bgcolor);
-}
-
-void econio_clrscr(void) {
-    HANDLE hstdout = STDOUT;
-    CONSOLE_SCREEN_BUFFER_INFO csbi;
-    if (GetConsoleScreenBufferInfo(hstdout, &csbi)) {
-        COORD coordScreen = {0, 0};
-        DWORD cCharsWritten;
-        DWORD dwConSize = csbi.dwSize.X * csbi.dwSize.Y;
-        FillConsoleOutputCharacter(
-            hstdout, ' ', dwConSize, coordScreen, &cCharsWritten
-        );
-        FillConsoleOutputAttribute(
-            hstdout, csbi.wAttributes, dwConSize, coordScreen, &cCharsWritten
-        );
-        SetConsoleCursorPosition(hstdout, coordScreen);
-    }
-}
-
 void econio_flush() { fflush(stdout); }
-
-void econio_set_title(char const* title) { SetConsoleTitle(title); }
 
 void econio_rawmode() { rawmode = true; }
 
@@ -128,8 +65,6 @@ int econio_getch() {
     return KEY_UNKNOWNKEY;
 }
 
-void econio_sleep(double sec) { Sleep(sec * 1000); }
-
 #else // defined _WIN32
 
 #include <assert.h>
@@ -142,13 +77,6 @@ void econio_sleep(double sec) { Sleep(sec * 1000); }
 #include <termios.h>
 #include <time.h>
 #include <unistd.h>
-
-void econio_gotoxy(int x, int y) { printf("\033[%d;%dH", y + 1, x + 1); }
-
-void econio_clrscr() {
-    printf("\033[2J");
-    econio_gotoxy(0, 0);
-}
 
 void econio_flush() { fflush(stdout); }
 
@@ -270,13 +198,6 @@ int econio_getch() {
         if (strcmp(unixkeycodes[i].escape, s) == 0)
             return unixkeycodes[i].key;
     return KEY_UNKNOWNKEY;
-}
-
-void econio_sleep(double sec) {
-    struct timespec req, rem;
-    req.tv_sec = (time_t)sec;
-    req.tv_nsec = (long)((sec - req.tv_sec) * 1e9);
-    nanosleep(&req, &rem);
 }
 
 #endif // defined _WIN32

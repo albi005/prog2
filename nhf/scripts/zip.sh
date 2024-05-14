@@ -19,5 +19,5 @@ zip "out/submit/data.zip" owners animals treatments
 # pandoc terv.md -o terv.html
 # weasyprint terv.html out/terv.pdf
 # nvm, just open nhf/ in obsidian, set theme to catppuccin frappe,
-# enable ignoring new lines and export to pdf
+# enable ignoring new lines (Strict line breaks ON) and export to pdf
 zip -Dr "out/submit/skeleton.zip" *.cpp *.hpp *.c *.h terv.pdf

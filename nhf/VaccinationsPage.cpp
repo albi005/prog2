@@ -10,21 +10,6 @@ VaccinationsRange::VaccinationsRange(
 )
     : owners(owners), openOwner(openOwner) {}
 
-VaccinationsPage::VaccinationsPage(Data& data, PageStack& pageStack)
-    : ContentView(new PaddingView(
-          new ListView(new std::vector<ListRange*>{new VaccinationsRange(
-              data.owners,
-              [&pageStack, &data](Owner& owner) {
-                  pageStack.push(new OwnerPage(owner, data, pageStack));
-              }
-          )}),
-          0,
-          1,
-          0,
-          0
-      )),
-      data(data), pageStack(pageStack) {}
-
 void VaccinationsRange::onBeforeMeasure() {
     orderedOwners.clear();
 
@@ -126,3 +111,18 @@ bool VaccinationsRange::handleInput(char input, size_t selectedIndex) {
     }
     return false;
 }
+
+VaccinationsPage::VaccinationsPage(Data& data, PageStack& pageStack)
+    : ContentView(new PaddingView(
+          new ListView(new std::vector<ListRange*>{new VaccinationsRange(
+              data.owners,
+              [&pageStack, &data](Owner& owner) {
+                  pageStack.push(new OwnerPage(owner, data, pageStack));
+              }
+          )}),
+          0,
+          1,
+          0,
+          0
+      )),
+      data(data), pageStack(pageStack) {}

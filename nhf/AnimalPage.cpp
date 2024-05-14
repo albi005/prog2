@@ -59,8 +59,8 @@ void TreatmentsRange::draw(
 
         canvas.draw(
             {14, y},
-            editing && selected ? ON_PRIMARY : textColor,
-            editing && selected ? PRIMARY : surfaceColor
+            editing && selected ? ON_SECONDARY : textColor,
+            editing && selected ? SECONDARY : surfaceColor
         );
         if (treatment.description.empty())
             canvas.draw() << " ";

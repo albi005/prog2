@@ -42,7 +42,7 @@ void EditablePropertyRange::draw(
 
     if (isSelected) {
         if (isEditing)
-            canvas.draw(ON_PRIMARY, PRIMARY);
+            canvas.draw(ON_SECONDARY_CONTAINER, SECONDARY_CONTAINER);
         else
             canvas.draw(surface, ON_SURFACE);
     } else {
@@ -87,9 +87,9 @@ void LinkPropertyRange::draw(
 
     bool isSelected = selectedIndex == 0;
     if (isSelected) {
-        canvas.draw(ON_PRIMARY, PRIMARY) << value;
+        canvas.draw(ON_TERTIARY, TERTIARY) << value;
     } else {
-        canvas.draw(ON_SURFACE_VARIANT, surface) << value;
+        canvas.draw(ON_SURFACE, surface) << value;
     }
 }
 

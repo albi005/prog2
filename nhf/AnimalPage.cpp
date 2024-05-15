@@ -1,6 +1,6 @@
 #include "AnimalPage.hpp"
 #include "OwnerPage.hpp"
-#include "constants.h"
+#include "constants.hpp"
 
 void TreatmentsRange::onBeforeMeasure() {
     treatments.clear();

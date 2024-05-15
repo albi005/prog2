@@ -3,17 +3,21 @@
 > Ragány-Németh Albert (GL6IFB)
 
 ## Futtatás
+
 ```bash
 cd src
-g++ *.c *.cpp
+g++ *.cpp
 ./a.out
 ```
+
 Az alkalmazás [ANSI escape code](https://en.wikipedia.org/wiki/ANSI_escape_code)-ok kiírásával kommunikál a terminállal, ezért az alap Windows-os terminálokkal valószínűleg nem fog működni, viszont Linuxon a legtöbb terminállal igen.
 Ajánlott terminál emulátorok:
+
 - [Wezterm](https://wezfurlong.org/wezterm)
 - [Kitty](https://sw.kovidgoyal.net/kitty)
 - [Alacritty](https://alacritty.org)
 - XTerm
+
 ## Specifikáció :: NHF1
 
 Ez egy parancssori alkalmazás, ami egy állatorvosi rendelő életét segíti. Eltárolja a tulajdonosok és állataik adatait.
@@ -47,6 +51,7 @@ A kezeléseknél `SPACE`-szel kiválasztható, hogy aznap kapott-e veszettség e
 Kezelést törölni `SHIFT+D`-vel lehet.
 
 ### Adatok tárolása
+
 A program futtatáskor beolvassa az adatokat, és kilépéskor pedig kiírja azokat a következő fájlokba:
 
 ```
@@ -81,6 +86,7 @@ Az adatok betöltését és tárolását repository osztályok végzik:
 Az üzleti logika nagy részét a generikus `Repository<TEntity>` tartalmazza, az entitás specifikus osztályok csak az objektum relációk beállításáért felelnek.
 
 ### Megjelenítés
+
 A megjelenítést és input kezelést `View` osztályok végzik:
 
 ![](doxygen/html/classView__coll__graph_org.svg)
@@ -120,6 +126,7 @@ Ez a `View` osztlályhoz hasonló `ListRange` implementációkat tartalmaz és a
 Minden oldal a konstruktorában állítja be, hogy milyen `ListRange`-eket tartalmaz. Például az `OwnersPage` egy keresőmezőt (`EditablePropertyRange`), egy üres sort (`PaddingRange`), egy hozzáadás gombot (`AddButtonRange`) és a tulajdonosok listáját
 (`OwnersRange`) tartalmazza.
 Minden oldalhoz tartozik egy külön `ListRange` ami az adott oldalnak megfelelően rajzolja ki az entitásokat:
+
 ```mermaid
 stateDiagram-v2
     VaccinationsPage --> VaccinationsRange
@@ -130,6 +137,7 @@ stateDiagram-v2
 ```
 
 ## Tesztelés
+
 A `test.cpp` fájlban
 
 *TBD*

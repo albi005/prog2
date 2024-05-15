@@ -1,7 +1,7 @@
 #include "App.hpp"
 #include "OstreamCanvas.hpp"
 #include "View.hpp"
-#include "constants.h"
+#include "constants.hpp"
 #include "data.hpp"
 #include <sstream>
 #ifdef CPORTA

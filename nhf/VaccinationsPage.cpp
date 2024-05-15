@@ -1,6 +1,6 @@
 #include "VaccinationsPage.hpp"
 #include "OwnerPage.hpp"
-#include "constants.h"
+#include "constants.hpp"
 #include <limits>
 
 bool VaccinationsRange::isInteractive() const { return !orderedOwners.empty(); }

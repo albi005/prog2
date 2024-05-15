@@ -2,8 +2,9 @@
 #include "App.hpp"
 #include "OstreamCanvas.hpp"
 #include "View.hpp"
+#include "constants.hpp"
 #include "data.hpp"
-#include "econio.h"
+#include "econio.hpp"
 #include <iostream>
 
 int main() {
@@ -28,8 +29,8 @@ int main() {
     while (true) {
         canvas.updateScreenSize(std::cin);
         app.draw(canvas);
-        canvas.draw({999, 999});
-        econio_flush();
+        canvas.draw({999, 999}); // move cursor to bottom right
+        std::cout.flush();
 
         char input = econio_getch();
         bool handled = app.handleInput(input);

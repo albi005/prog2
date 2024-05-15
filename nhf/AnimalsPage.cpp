@@ -1,7 +1,7 @@
 #include "AnimalsPage.hpp"
 #include "AnimalPage.hpp"
 #include "ListView.hpp"
-#include "constants.h"
+#include "constants.hpp"
 
 // TODO: perhaps refactor AnimalsPage and OwnersPage into a template
 void AnimalsRange::onBeforeMeasure() {

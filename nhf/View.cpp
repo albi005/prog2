@@ -1,5 +1,5 @@
 #include "View.hpp"
-#include "constants.h"
+#include "constants.hpp"
 
 bool View::handleInput(char input) {
     throw std::runtime_error("handleInput not implemented for this view");

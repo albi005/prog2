@@ -26,8 +26,8 @@ set(COMMON_FILES
         View.cpp
         View.hpp
         data.cpp
-        econio.c
-        econio.h
+        econio.cpp
+        econio.hpp
         entities.cpp
         entities.hpp
         utils.cpp

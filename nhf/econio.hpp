@@ -1,23 +1,6 @@
-// from https://infoc.eet.bme.hu/megjelenites/
+#pragma once
 
-#ifndef ECONIO_H
-#define ECONIO_H
-
-#include "constants.h"
-#include <stdbool.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-/**
- * Send output to the terminal. To be called if many characters were
- * drawn to the terminal and there was no \n at the end.
- */
-void econio_flush();
-
-/** Set the title of the terminal window. */
-void econio_set_title(char const* title);
+// based on https://github.com/czirkoszoltan/c-econio
 
 /**
  * Switch the terminal to raw mode, to detect F1-F10, cursor keys and
@@ -34,12 +17,6 @@ void econio_rawmode();
 void econio_normalmode();
 
 /**
- * Detect if a key is pressed. If so, it can be read with econio_getch().
- * Only to be used after calling econio_rawmode().
- */
-bool econio_kbhit();
-
-/**
  * Get one raw character from terminal. This can detect F1-F10, cursor keys,
  * backspace and other controlling keys: see the keyboard constants.
  * ASCII code is returned for other keys. Non-ASCII keys probably won't work.
@@ -51,9 +28,3 @@ bool econio_kbhit();
  * Also function keys are not supported on Windows.
  */
 int econio_getch();
-
-#ifdef __cplusplus
-} /* extern "C" */
-#endif
-
-#endif

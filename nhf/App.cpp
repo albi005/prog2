@@ -1,6 +1,6 @@
 #include "App.hpp"
 #include "AnimalPage.hpp"
-#include "constants.h"
+#include "constants.hpp"
 
 Tabs::Tab::Tab(View& view, const char* title) : view(view), title(title) {}
 

@@ -1,11 +1,7 @@
-// based on https://infoc.eet.bme.hu/megjelenites/
+// based on https://github.com/czirkoszoltan/c-econio
 
-#ifdef MEMTRACE
-#include "memtrace.h"
-#endif
-
-#include "constants.h"
-#include "econio.h"
+#include "econio.hpp"
+#include "constants.hpp"
 
 #if defined(_WIN32) || defined(_WIN64)
 
@@ -20,16 +16,9 @@ static bool rawmode = false;
 
 #define STDOUT GetStdHandle(STD_OUTPUT_HANDLE)
 
-void econio_flush() { fflush(stdout); }
-
 void econio_rawmode() { rawmode = true; }
 
 void econio_normalmode() { rawmode = false; }
-
-bool econio_kbhit() {
-    assert(rawmode);
-    return _kbhit() != 0;
-}
 
 int econio_getch() {
     static struct {
@@ -69,18 +58,12 @@ int econio_getch() {
 
 #include <assert.h>
 #include <ctype.h>
-#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/time.h>
-#include <sys/types.h>
 #include <termios.h>
-#include <time.h>
-#include <unistd.h>
 
 void econio_flush() { fflush(stdout); }
-
-void econio_set_title(char const* title) { printf("\033]2;%s\007", title); }
 
 void econio_rawmode() {
     int fd = fileno(stdin);

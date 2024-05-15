@@ -1,5 +1,5 @@
 #include "utils.hpp"
-#include "constants.h"
+#include "constants.hpp"
 #include <functional>
 
 StringEditor::StringEditor(std::string& s) : value(s), oldValue(s) {}

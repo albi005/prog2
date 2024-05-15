@@ -32,6 +32,10 @@ class TreatmentsRange : public ListRange {
 
 class AnimalPage : public ContentView {
     Animal& animal;
+    Data& data;
+    PageStack& pageStack;
+
+    bool handleInput(char input) override;
 
   public:
     AnimalPage(Animal& animal, Data& data, PageStack& pageStack);

@@ -24,7 +24,7 @@ void AnimalsRange::onBeforeMeasure() {
     std::sort(
         filteredAnimals.begin(),
         filteredAnimals.end(),
-        [](auto a, auto b) { return a.second < b.second; }
+        [](auto a, auto b) { return a.first->name < b.first->name; }
     );
 }
 

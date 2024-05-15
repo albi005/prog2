@@ -61,7 +61,7 @@ void TreatmentsRange::draw(
         canvas.draw({15, y}, textColor, surfaceColor);
         canvas.draw() << treatment.description;
         if (isEditing && isSelected)
-            canvas.draw(ON_SURFACE, ON_SURFACE) << ' ';
+            canvas.draw(PRIMARY, PRIMARY) << ' ';
     }
 }
 
@@ -123,4 +123,15 @@ AnimalPage::AnimalPage(Animal& animal, Data& data, PageStack& pageStack)
           3,
           1
       )),
-      animal(animal) {}
+      animal(animal), data(data), pageStack(pageStack) {}
+
+bool AnimalPage::handleInput(char input) {
+    if (!ContentView::handleInput(input)) {
+        if (input == 'D') {
+            pageStack.pop();
+            data.animals.remove(animal);
+            return true;
+        }
+    }
+    return false;
+}

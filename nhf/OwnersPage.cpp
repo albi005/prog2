@@ -20,7 +20,7 @@ void OwnersRange::onBeforeMeasure() {
     }
 
     std::sort(filteredOwners.begin(), filteredOwners.end(), [](auto a, auto b) {
-        return a.second < b.second;
+        return a.first->name < b.first->name;
     });
 }
 
@@ -76,9 +76,13 @@ void OwnersRange::draw(
 }
 
 bool OwnersRange::handleInput(char input, size_t selectedIndex) {
-    if (input == KEY_ENTER) {
-        openOwner(*filteredOwners[selectedIndex].first);
-        return true;
+    switch (input) {
+        case KEY_ENTER:
+            openOwner(*filteredOwners[selectedIndex].first);
+            return true;
+        case 'D':
+            data.owners.remove(*filteredOwners[selectedIndex].first);
+            return true;
     }
     return false;
 }

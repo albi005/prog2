@@ -42,10 +42,11 @@ class PaddingView final : public ContentView {
 class PageStack final : public View {
     std::vector<View*> pages;
 
-    Color getSurfaceColor(size_t level) const;
+    static Color getSurfaceColor(size_t level);
 
   public:
     void push(View* page); // takes ownership
+    void pop();
     void draw(ICanvas& canvas) override;
     bool handleInput(char input) override;
     size_t size() const;

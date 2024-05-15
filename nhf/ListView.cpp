@@ -43,7 +43,7 @@ void EditablePropertyRange::draw(
     if (isSelected) {
         if (isEditing) {
             canvas.draw(ON_SURFACE) << value;
-            canvas.draw(ON_SURFACE, ON_SURFACE) << ' ';
+            canvas.draw(PRIMARY, PRIMARY) << ' ';
         } else {
             canvas.draw(surface, ON_SURFACE) << (value.empty() ? " " : value);
         }

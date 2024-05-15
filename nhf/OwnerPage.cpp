@@ -84,4 +84,15 @@ OwnerPage::OwnerPage(Owner& owner, Data& data, PageStack& pageStack)
           3,
           1
       )),
-      owner(owner) {}
+      owner(owner), pageStack(pageStack), data(data) {}
+
+bool OwnerPage::handleInput(char input) {
+    if (!ContentView::handleInput(input)) {
+        if (input == 'D') {
+            pageStack.pop();
+            data.owners.remove(owner);
+            return true;
+        }
+    }
+    return false;
+}

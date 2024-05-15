@@ -31,8 +31,12 @@ class OwnerAnimalsRange : public ListRange {
     );
 };
 
-class OwnerPage : public ContentView {
+class OwnerPage final : public ContentView {
     Owner& owner;
+    PageStack& pageStack;
+    Data& data;
+
+    bool handleInput(char input) override;
 
   public:
     OwnerPage(Owner& owner, Data& data, PageStack& pageStack);

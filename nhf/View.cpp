@@ -2,7 +2,6 @@
 #include "constants.h"
 
 bool View::handleInput(char input) {
-    // todo: add custom exception if needed
     throw std::runtime_error("handleInput not implemented for this view");
 }
 
@@ -28,6 +27,11 @@ void PaddingView::draw(ICanvas& canvas) {
 }
 
 void PageStack::push(View* page) { pages.push_back(page); }
+
+void PageStack::pop() {
+    delete pages.back();
+    pages.pop_back();
+}
 
 size_t PageStack::size() const { return pages.size(); }
 
@@ -55,17 +59,18 @@ PageStack::~PageStack() {
 bool PageStack::handleInput(char input) {
     if (pages.back()->handleInput(input))
         return true;
+
     if (input == KEY_ESCAPE || input == 'q') {
-        delete pages.back();
-        pages.pop_back();
+        pop();
         if (pages.empty())
             return false;
         return true;
     }
+
     return false;
 }
 
-Color PageStack::getSurfaceColor(size_t level) const {
+Color PageStack::getSurfaceColor(size_t level) {
     static const Color colors[] = {
         SURFACE_CONTAINER_LOWEST,
         SURFACE_CONTAINER_LOW,

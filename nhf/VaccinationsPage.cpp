@@ -39,6 +39,8 @@ void VaccinationsRange::onBeforeMeasure() {
     // sort owners based on oldest vaccination.
     // first owner should have the animal that needs to be vaccinated the most
     std::sort(orderedOwners.begin(), orderedOwners.end(), [](auto& a, auto& b) {
+        if (a.first == b.first)
+            return a.second->name < b.second->name;
         return a.first < b.first;
     });
 }

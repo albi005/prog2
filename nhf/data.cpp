@@ -12,8 +12,9 @@ Owner* OwnerRepository::createNew() {
 }
 
 void OwnerRepository::remove(Owner& owner) {
-    for (auto pair : owner.animals)
-        animals.remove(*pair.second);
+    while (!owner.animals.empty())
+        animals.remove(*owner.animals.begin()->second);
+
     Repository::remove(owner);
 }
 
@@ -40,8 +41,9 @@ Animal* AnimalRepository::createNew(Owner& owner) {
 }
 
 void AnimalRepository::remove(Animal& entity) {
-    for (auto pair : entity.treatments)
-        treatments.remove(*pair.second);
+    while (!entity.treatments.empty())
+        treatments.remove(*entity.treatments.begin()->second);
+
     Owner& owner = *entity.owner;
     owner.animals.erase(entity.id);
     Repository::remove(entity);
@@ -63,6 +65,7 @@ Treatment* TreatmentRepository::createNew(Animal& animal) {
     treatment->id = getNextId();
     treatment->animalId = animal.id;
     treatment->animal = &animal;
+    treatment->date = time(nullptr);
     entities[treatment->id] = treatment;
     animal.treatments.emplace(treatment->id, treatment);
     return treatment;
@@ -115,7 +118,6 @@ void Data::save(
     owners.save(ownersStream);
 }
 
-// TODO: test saving to a new file
 void Data::save(
     const char* ownersFile, const char* animalsFile, const char* treatmentsFile
 ) {

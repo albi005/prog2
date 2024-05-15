@@ -148,6 +148,7 @@ void ListView::updateSelectionAndMeasure() {
     selectedIndexInRange = 0;
     selectedLineIndex = 0;
     listHeight = 0; // number of lines so far
+    bool found = false;
     for (auto range : *ranges) {
         range->onBeforeMeasure();
 
@@ -161,26 +162,26 @@ void ListView::updateSelectionAndMeasure() {
         if (height == 0)
             continue;
         size_t firstIndex = interactiveCount;
+        size_t lastIndex = interactiveCount + height - 1;
         interactiveCount += height;
 
-        // Find the selected range:
-
-        // already found, finish counting lines
-        if (selectedItemIndex < firstIndex)
-            continue;
-
-        // Store the last interactive line until we reach the selected one.
-        // If the last item is deleted this gives us the last interactive
-        // line
-        selectedRange = range;
-        selectedIndexInRange = height - 1;
-
-        // this is the one
-        if (selectedItemIndex >= firstIndex) {
+        // Set the selected range and the selected indexes
+        if (selectedItemIndex >= firstIndex && selectedItemIndex <= lastIndex) {
+            selectedRange = range;
             selectedIndexInRange = selectedItemIndex - firstIndex;
+            selectedLineIndex = lineCountBefore + selectedIndexInRange;
+            found = true;
         }
-
-        selectedLineIndex = lineCountBefore + selectedIndexInRange;
+        // this condition breaks if the last range is not interactive, but that
+        // also breaks scrolling so don't care (can't be selected -> can't be
+        // scrolled to -> can't be visible)
+        else if (!found && range == ranges->back()) {
+            // reached the end without finding a range for the selected index
+            selectedRange = range;
+            selectedIndexInRange = height - 1;
+            selectedLineIndex = lineCountBefore + selectedIndexInRange;
+            selectedItemIndex = lastIndex;
+        }
     }
 }
 

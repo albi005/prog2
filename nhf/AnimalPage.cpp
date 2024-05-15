@@ -128,8 +128,8 @@ AnimalPage::AnimalPage(Animal& animal, Data& data, PageStack& pageStack)
 bool AnimalPage::handleInput(char input) {
     if (!ContentView::handleInput(input)) {
         if (input == 'D') {
-            pageStack.pop();
             data.animals.remove(animal);
+            pageStack.pop();
             return true;
         }
     }

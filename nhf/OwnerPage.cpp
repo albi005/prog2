@@ -89,8 +89,8 @@ OwnerPage::OwnerPage(Owner& owner, Data& data, PageStack& pageStack)
 bool OwnerPage::handleInput(char input) {
     if (!ContentView::handleInput(input)) {
         if (input == 'D') {
-            pageStack.pop();
             data.owners.remove(owner);
+            pageStack.pop();
             return true;
         }
     }

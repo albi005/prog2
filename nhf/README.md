@@ -153,6 +153,6 @@ A `test.cpp` fájlban
 Teljes parancs, tesztek futtatásával:
 
 ```bash
-g++ *.cpp -DTEST -fsanitize=address
+g++ *.cpp -DRUNTEST -fsanitize=address
 ./a.out
 ```

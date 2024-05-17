@@ -1,4 +1,6 @@
+#undef MEMTRACE // messes with explicitly deleting functions
 #if RUNTEST || CPORTA
+
 #include "App.hpp"
 #include "OstreamCanvas.hpp"
 #include "constants.hpp"
@@ -55,9 +57,21 @@ class Scenario {
         updateLastFrame();
         // clear screen so that the next line will be the first visible line
         os << CSI "2J";
+
         // print frame
+#ifdef CPORTA
+        // I give up. Cporta is broken.
+        // This works:
+        for (size_t i = 0; i < lastFrame.size(); i++) {
+            char c = lastFrame[i];
+            os.put(c);
+        }
+#else
+        // But this causes an illegal system call (retval -31):
         os << lastFrame;
-        // move to next line and reset style
+#endif
+
+        // move to the next line and reset style
         os << CSI "21;1H" CSI "m";
         os.flush();
     }
@@ -123,7 +137,7 @@ int main() {
         // close all pages
         s << "qqq";
 
-        EXPECT_FALSE(s.isVisible("Tulajdonosok"));
+        EXPECT_NOT_VISIBLE(s, "Tulajdonosok");
     }
     END GTEND(std::cerr);
 }

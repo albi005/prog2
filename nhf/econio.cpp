@@ -113,7 +113,7 @@ static int rawgetch() { return fgetc(stdin); }
 int econio_getch() {
     static struct {
         char const* escape;
-        EconioKey key;
+        char key;
     } unixkeycodes[] = {
         {"\033OP", KEY_F1},
         {"\033OQ", KEY_F2},

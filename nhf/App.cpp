@@ -51,4 +51,20 @@ Tabs::~Tabs() {
     delete &tabs;
 }
 
-App::App(PageStack& pageStack) : ContentView(&pageStack) {}
+App::App(PageStack* pageStack) : ContentView(pageStack) {}
+
+App* App::create(Data& data) {
+    // This can't be a constructor because a newly-allocated value (pageStack)
+    // can't be passed to different members in a member initializer list. This
+    // also means that PageStack can't take the first page in its constructor.
+    // (That would also create a circular dependency)
+    PageStack& pageStack = *new PageStack;
+    App* app = new App(&pageStack);
+    Tabs* tabs = new Tabs(new std::vector<Tabs::Tab>{
+        Tabs::Tab(*new VaccinationsPage(data, pageStack), "Oltások"),
+        Tabs::Tab(*new OwnersPage(data, pageStack), "Tulajdonosok"),
+        Tabs::Tab(*new AnimalsPage(data, pageStack), "Állatok")
+    });
+    pageStack.push(tabs);
+    return app;
+}

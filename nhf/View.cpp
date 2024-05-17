@@ -36,6 +36,9 @@ void PageStack::pop() {
 size_t PageStack::size() const { return pages.size(); }
 
 void PageStack::draw(ICanvas& canvas) {
+    if (pages.empty())
+        return;
+
     size_t level = 0;
     for (auto page : pages) {
         PaddedCanvas paddedCanvas(
@@ -57,6 +60,9 @@ PageStack::~PageStack() {
 }
 
 bool PageStack::handleInput(char input) {
+    if (pages.empty())
+        return false;
+
     if (pages.back()->handleInput(input))
         return true;
 

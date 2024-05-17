@@ -41,6 +41,7 @@ add_executable(vetman2
 
 add_executable(test
         test.cpp
+        gtest_lite.h
         ${COMMON_FILES}
 )
-target_compile_definitions(test PUBLIC CPORTA)
+target_compile_definitions(test PUBLIC RUNTEST)

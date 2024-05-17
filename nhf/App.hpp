@@ -9,8 +9,8 @@
 #include <functional>
 
 /// @brief A View that draws a tab bar at the top of the screen and the
-/// currently selected tab. Use Tab to switch between tabs.
-class Tabs final : public virtual View {
+/// currently selected tab. Use the tab key ↹ to switch between tabs.
+class Tabs final : public View {
   public:
     class Tab {
         View& view;
@@ -35,6 +35,10 @@ class Tabs final : public virtual View {
 };
 
 class App final : public ContentView {
+    App(PageStack* pageStack);
+
   public:
-    explicit App(PageStack& pageStack);
+    /// @brief Allocates an App instance and initializes it with the initial
+    /// View hierarchy
+    static App* create(Data& data);
 };

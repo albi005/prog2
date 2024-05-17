@@ -15,7 +15,7 @@ class View {
 };
 
 /// A View that delegates drawing and input handling to its child View
-class ContentView : public virtual View {
+class ContentView : public View {
     View* content;
 
   protected:

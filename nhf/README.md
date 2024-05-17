@@ -136,8 +136,23 @@ stateDiagram-v2
     AnimalPage --> TreatmentsRange
 ```
 
+### Memóriakezelés
+
+Minden `View` felelős a konstruktorában átvett `View` deallokálásáért.
+
 ## Tesztelés
 
 A `test.cpp` fájlban
 
-*TBD*
+*WIP*
+
+### Memóriaszivárgás-mentesség
+
+`-fsanitize=address`-el fordítva nincs hibaüzenet.
+
+Teljes parancs, tesztek futtatásával:
+
+```bash
+g++ *.cpp -DTEST -fsanitize=address
+./a.out
+```

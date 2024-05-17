@@ -23,6 +23,6 @@ Komment::Komment() : Allapotgep(KommentAllapot::alap, tabla) {
     tabla[KommentAllapot::komment_csillag_volt] = {
         {KommentInput::per, new Nop(KommentAllapot::alap)},
         {KommentInput::csillag, new Nop(KommentAllapot::komment_csillag_volt)},
-        {KommentInput::egyeb, new Nop(KommentAllapot::komment_csillag_volt)}
+        {KommentInput::egyeb, new Nop(KommentAllapot::komment)}
     };
 }

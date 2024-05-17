@@ -63,6 +63,11 @@ int main() {
             k.get().c_str()
         );
     }
+    END TEST(Komment, egyszeru) {
+        Komment k;
+        runstr(k, "i/*z*emi/ze");
+        std::cout << k.get() << std::endl;
+    }
     END
 #endif
 

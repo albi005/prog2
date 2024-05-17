@@ -108,27 +108,23 @@ struct Data {
         std::istream& treatmentsStream
     );
 
-    Data();
-
   public:
+    Data();
     Data(
         std::istream& ownersStream,
         std::istream& animalsStream,
         std::istream& treatmentsStream
     );
-
     Data(
         const char* ownersFile,
         const char* animalsFile,
         const char* treatmentsFile
     );
-
     void save(
         std::ostream& ownersStream,
         std::ostream& animalsStream,
         std::ostream& treatmentsStream
     );
-
     void save(
         const char* ownersFile,
         const char* animalsFile,

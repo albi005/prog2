@@ -16,7 +16,7 @@ class Scenario {
     std::string lastFrame;
 
   public:
-    Scenario(View* view) : view(view), canvas(output) {
+    explicit Scenario(View* view) : view(view), canvas(output) {
         // set screen size to 90 columns by 20 rows
         std::stringstream tmp(CSI "20;90R");
         canvas.updateScreenSize(tmp);
@@ -95,7 +95,7 @@ std::ostream& operator<<(std::ostream& os, Scenario& scenario) {
         __FILE__,                                                              \
         __LINE__,                                                              \
         "EXPECT_VISIBLE(" #text ")"                                            \
-    ) << scenario;
+    ) << scenario
 
 /// @brief Tests whether text is not visible. If it is, prints the current frame
 /// to stdout
@@ -105,12 +105,44 @@ std::ostream& operator<<(std::ostream& os, Scenario& scenario) {
         __FILE__,                                                              \
         __LINE__,                                                              \
         "EXPECT_VISIBLE(" #text ")"                                            \
-    ) << scenario;
+    ) << scenario
 
 int main() {
     GTINIT(std::cin);
 
-    TEST(Scenario, EditTreatmentDescription) {
+    TEST(Scenario, Navigation) {
+        // read test data from files
+        Data data = Data("owners", "animals", "treatments");
+        Scenario s(App::create(data));
+
+        s << KEY_ENTER; // open owner
+        EXPECT_VISIBLE(s, "Elérhetőség:");
+        s << "jjjj" << KEY_ENTER; // select and open animal
+        EXPECT_VISIBLE(s, "Faj:");
+        s << "qq"; // go back to vaccinations
+        EXPECT_NOT_VISIBLE(s, "Faj:");
+        EXPECT_NOT_VISIBLE(s, "Elérhetőség:");
+        s << KEY_TAB; // switch to OwnersPage
+        EXPECT_VISIBLE(s, "+ Hozzáadás");
+        s << "jj" << KEY_ENTER; // open owner
+        EXPECT_VISIBLE(s, "Elérhetőség:");
+        s << "q"; // go back to OwnersPage
+        EXPECT_NOT_VISIBLE(s, "Elérhetőség:");
+        s << KEY_TAB; // switch to AnimalsPage
+        EXPECT_VISIBLE(s, "Keresés:");
+        s << "j" << KEY_ENTER; // open animal
+        EXPECT_VISIBLE(s, "Faj:");
+        s << "jj" << KEY_ENTER; // open owner
+        EXPECT_VISIBLE(s, "Elérhetőség:");
+        s << "k" << KEY_ENTER; // open last animal
+        EXPECT_VISIBLE(s, "Faj:");
+        EXPECT_VISIBLE(s, "Oltások"); // tab titles are always visible
+        s << "qqqq";                  // quit
+        EXPECT_NOT_VISIBLE(s, "Oltások");
+    }
+    END
+
+        TEST(Scenario, EditTreatmentDescription) {
         Data data = Data("owners", "animals", "treatments");
         Scenario s(App::create(data));
 
@@ -138,6 +170,53 @@ int main() {
         s << "qqq";
 
         EXPECT_NOT_VISIBLE(s, "Tulajdonosok");
+    }
+    END TEST(Scenario, AddAndPersist) {
+        Data data = Data();
+        Scenario s(App::create(data));
+
+        // switch to OwnersPage, add an owner
+        s << KEY_TAB << "j" << KEY_ENTER;
+        EXPECT_VISIBLE(s, "Még nem lett állat felvéve");
+
+        // fill out owner details
+        s << KEY_ENTER << "Jon Arbuckle" << KEY_ENTER;
+        EXPECT_VISIBLE(s, "Jon Arbuckle");
+        s << "j" << KEY_ENTER << "Valahol" << KEY_ENTER;
+        EXPECT_VISIBLE(s, "Valahol");
+        s << "j" << KEY_ENTER << "john@example.com" << KEY_ENTER;
+        EXPECT_VISIBLE(s, "john@example.com");
+
+        // add an animal
+        s << "j" << KEY_ENTER;
+        EXPECT_VISIBLE(s, "Még nem lett kezelés felvéve");
+
+        // fill out animal details
+        s << KEY_ENTER << "Garfield" << KEY_ENTER << "j" << KEY_ENTER
+          << "Macska" << KEY_ENTER;
+
+        // add a treatment
+        s << "j" << KEY_ENTER;
+        EXPECT_NOT_VISIBLE(s, "Még nem lett kezelés felvéve");
+
+        // fill out treatment details and mark vaccination
+        s << "j" << KEY_ENTER << "Veszettség elleni oltás" << KEY_ENTER << ' ';
+        EXPECT_VISIBLE(s, "Veszettség elleni oltás");
+        EXPECT_VISIBLE(s, "💉");
+
+        std::stringstream owners, animals, treatments;
+        data.save(owners, animals, treatments);
+
+        Data data2 = Data(owners, animals, treatments);
+        Scenario s2(App::create(data2));
+
+        s2 << KEY_ENTER;
+        EXPECT_VISIBLE(s2, "Garfield");
+
+        s2 << "jjjj" << KEY_ENTER;
+        EXPECT_VISIBLE(s2, "Garfield");
+        EXPECT_VISIBLE(s2, "Veszettség elleni oltás");
+        EXPECT_VISIBLE(s2, "💉");
     }
     END GTEND(std::cerr);
 }

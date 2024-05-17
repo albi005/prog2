@@ -18,6 +18,9 @@ mkdir -p out
 zip "out/src.zip" *.cpp *.hpp
 zip "out/data.zip" owners animals treatments
 
+# obsidian, catppuccin frappe, strict line breaks on
+# ctrl-p, export to pdf
+# include file name off, page size a4, margin none
 echo
 echo -e "\033[0;31m Did you update the PDFs? \033[0m"
 echo

@@ -52,7 +52,7 @@ class Scenario {
         return lastFrame.find(text) != std::string::npos;
     }
 
-    // print the current frame to stdout
+    // print the current frame to a character stream
     void print(std::ostream& os = std::cout) {
         updateLastFrame();
         // clear screen so that the next line will be the first visible line
@@ -140,15 +140,9 @@ int main() {
         s << "qqqq";                  // quit
         EXPECT_NOT_VISIBLE(s, "Oltások");
     }
-    END
-
-        TEST(Scenario, EditTreatmentDescription) {
+    END TEST(Scenario, EditTreatmentDescription) {
         Data data = Data("owners", "animals", "treatments");
         Scenario s(App::create(data));
-
-        // switch to OwnersPage, go down, switch to AnimalsPage, go down, switch
-        // to VaccinationsPage
-        s << KEY_TAB << "jjjjjjj" << KEY_TAB << "jjjjjjjjj" << KEY_TAB;
 
         // open first owner, go down to an animal, open, select a treatment
         s << KEY_ENTER << "jjjj" << KEY_ENTER << KEY_ENTER << "jjjj"
@@ -161,8 +155,11 @@ int main() {
         EXPECT_NOT_VISIBLE(s, "még valami");
 
         // edit treatment description then save
-        s << KEY_ENTER << "inkább ez";
+        s << KEY_ENTER << "x" << KEY_BACKSPACE
+          << KEY_BACKSPACE; // test backspace
+        s << "inkább ez";
         EXPECT_VISIBLE(s, "inkább ez");
+        EXPECT_NOT_VISIBLE(s, "x");
         s << KEY_ENTER;
         EXPECT_VISIBLE(s, "inkább ez");
 
@@ -171,7 +168,7 @@ int main() {
 
         EXPECT_NOT_VISIBLE(s, "Tulajdonosok");
     }
-    END TEST(Scenario, AddAndPersist) {
+    END TEST(Scenario, CreateAndPersist) {
         Data data = Data();
         Scenario s(App::create(data));
 
@@ -217,6 +214,86 @@ int main() {
         EXPECT_VISIBLE(s2, "Garfield");
         EXPECT_VISIBLE(s2, "Veszettség elleni oltás");
         EXPECT_VISIBLE(s2, "💉");
+    }
+    END TEST(Scenario, Search) {
+        Data data = Data();
+        Scenario s(App::create(data));
+        Owner& owner = *data.owners.createNew();
+        owner.name = "Jon Arbuckle";
+        Animal& animal = *data.animals.createNew(owner);
+        animal.name = "Garfield";
+
+        s << KEY_TAB << KEY_ENTER << "Jo";
+        EXPECT_VISIBLE(s, "Jo");
+        EXPECT_VISIBLE(s, "n Arbuckle");
+        s << "h";
+        EXPECT_NOT_VISIBLE(s, "Arbuckle");
+        EXPECT_VISIBLE(s, "Nincs találat");
+        s << KEY_ESCAPE;
+        EXPECT_VISIBLE(s, "Jon Arbuckle");
+
+        s << KEY_TAB << KEY_ENTER << "Ga";
+        EXPECT_VISIBLE(s, "Ga");
+        EXPECT_VISIBLE(s, "rfield");
+        s << "h";
+        EXPECT_NOT_VISIBLE(s, "rfield");
+        EXPECT_VISIBLE(s, "Nincs találat");
+        s << KEY_ESCAPE;
+        EXPECT_VISIBLE(s, "Garfield");
+    }
+    END TEST(Scenario, DeleteFirstAndLastItem) {
+        // load sample data
+        Data data = Data("owners", "animals", "treatments");
+        Scenario s(App::create(data));
+        std::vector<std::string> orderedNames(data.owners.size());
+        std::transform(
+            data.owners.begin(),
+            data.owners.end(),
+            orderedNames.begin(),
+            [](auto& pair) { return pair.second->name; }
+        );
+        std::sort(orderedNames.begin(), orderedNames.end());
+
+        s << KEY_TAB; // select owners page
+        s << "G";     // select last owner
+        EXPECT_VISIBLE(s, orderedNames[orderedNames.size() - 1].c_str());
+        s << "D"; // delete
+        EXPECT_NOT_VISIBLE(s, orderedNames[orderedNames.size() - 1].c_str());
+        EXPECT_VISIBLE(s, orderedNames[orderedNames.size() - 2].c_str());
+        s << "D"; // delete
+        EXPECT_NOT_VISIBLE(s, orderedNames[orderedNames.size() - 2].c_str());
+        s << "gjj"; // select first owner
+        EXPECT_VISIBLE(s, orderedNames[0].c_str());
+        s << "D"; // delete
+        EXPECT_NOT_VISIBLE(s, orderedNames[0].c_str());
+    }
+    END TEST(Exceptions, ListRange) {
+        std::string value;
+        PropertyRange propertyRange("Title", value);
+        EXPECT_FALSE(propertyRange.isInteractive());
+        EXPECT_THROW(propertyRange.handleInput('a', 0), std::logic_error&);
+
+        struct UnimplementedRange : ListRange {
+            void draw(ICanvas&, size_t, size_t, size_t) const override {}
+
+            bool isInteractive() const override { return true; }
+        } unimplementedRange;
+
+        EXPECT_TRUE(unimplementedRange.isInteractive());
+        EXPECT_THROW(unimplementedRange.handleInput('a', 0), std::runtime_error&);
+    }
+    END TEST(Exceptions, View) {
+        struct NonInteractiveView : View {
+            void draw(ICanvas& canvas) override {}
+        } view;
+
+        EXPECT_THROW(view.handleInput('a'), std::runtime_error&);
+    }
+    END TEST(Exceptions, NonEmptyRepository) {
+        Data data;
+        data.owners.createNew();
+        std::stringstream ss;
+        EXPECT_THROW(data.owners.load(ss), std::runtime_error&);
     }
     END GTEND(std::cerr);
 }

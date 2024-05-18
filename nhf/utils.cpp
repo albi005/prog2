@@ -28,12 +28,6 @@ bool StringEditor::handleInput(char input) {
 
 StringEditor::~StringEditor() = default;
 
-/// @brief Ensures index is less than count
-void utils::clampIndex(size_t& index, size_t count) {
-    if (index >= count)
-        index = count - 1;
-}
-
 bool utils::isContinuationByte(char c) {
     return (c & 0b11000000) == 0b10000000;
 }

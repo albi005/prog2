@@ -19,8 +19,6 @@ class StringEditor {
 };
 
 namespace utils {
-    void clampIndex(size_t& index, size_t count);
-
     /// @brief Whether c is a UTF-8 continuation byte
     /// @see https://en.wikipedia.org/wiki/UTF-8#Encoding
     bool isContinuationByte(char c);

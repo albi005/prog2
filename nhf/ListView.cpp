@@ -9,9 +9,9 @@ bool ListRange::isInteractive() const { return false; }
 
 bool ListRange::handleInput(char input, size_t selectedIndex) {
     if (isInteractive())
-        throw std::logic_error("handleInput called on non-interactive range");
-    else
         throw std::runtime_error("handleInput not implemented for this range");
+    else
+        throw std::logic_error("handleInput called on non-interactive range");
 }
 
 ListRange::~ListRange() {}

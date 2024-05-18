@@ -136,15 +136,34 @@ stateDiagram-v2
     AnimalPage --> TreatmentsRange
 ```
 
+## Programozói dokumentáció :: NHF4
+
+### Függőségek
+
+A program egyedül a prog1-ből is használt econio könyvtár egy leegyszerűsített változatát használja,
+a terminál módjai (raw/cooked) közötti váltáshoz és karakterenénti beolvasáshoz.
+Ez az `econio.hpp` és `econio.cpp` fájlokban található.
+Forrás: [InfoC](https://infoc.eet.bme.hu/megjelenites/), [GitHub](https://github.com/czirkoszoltan/c-econio)
+
 ### Memóriakezelés
 
-Minden `View` felelős a konstruktorában átvett `View` deallokálásáért.
+Minden `View` felelős a konstruktorában átvett `View` mutató deallokálásáért. Ez lehetővé teszi a következő mintát, anélkül, hogy bármely `View`-t le kéne másolni:
 
-## Tesztelés
+```c++
+View* foo = new FooView(
+    new BarView(
+        new BazView(...)
+    )
+);
+```
 
-A `test.cpp` fájlban
+### Tesztelés
 
-*WIP*
+A `test.cpp` fájlban, `gtest_lite` használatával.
+
+A Scenario tesztek a program teljes működését szimulálják. A `Scenario` osztály a konstruktorában átvesz egy `View` mutatót és az inserter operátorral megadott inputot futtatja le rajta `Scenario.isVisible()` vagy `Scenario.print()` hívásakor. Az `EXPECT_VISIBLE` és `EXPECT_NOT_VISIBLE` makrók meghívják a `Scenario.isVisible()` metódust, és ha nem teljesül a feltétel, a `gtest_lite` működésével hasonlóan jelzik a hiba helyét, majd kirajzolják az alkalmazás jelenlegi állapotát `stdout`-ra.
+
+Az `isVisible` metódus csak a kiírt karaktereket ellenőrzi, így ha például az ellenőrzött karakterláncon belül színváltoztatás történik, a kiírt escape code miatt nem fog teljesülni a feltétel.
 
 ### Memóriaszivárgás-mentesség
 
